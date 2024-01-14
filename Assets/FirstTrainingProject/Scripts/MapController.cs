@@ -19,7 +19,15 @@ public class MapController : MonoBehaviour
     [SerializeField]
     private GameObject CeilingAngle;
     [SerializeField]
+    private GameObject CeilingAngleWithoutPillar;
+    [SerializeField]
     private GameObject CeilingBranch;
+    [SerializeField]
+    private GameObject CeilingBranchWithoutLeftPillar;
+    [SerializeField]
+    private GameObject CeilingBranchWithoutRightPillar;
+    [SerializeField]
+    private GameObject CeilingBranchWithoutBothPillars;
     [SerializeField]
     private GameObject CeilingCrossing;
     //public GameObject DoorLattice;
@@ -60,7 +68,11 @@ public class MapController : MonoBehaviour
         if (CeilingStraight == null) throw new System.Exception($"CeilingStraight not set!");
         if (CeilingBlindAlley == null) throw new System.Exception($"CeilingBlindAlley not set!");
         if (CeilingAngle == null) throw new System.Exception($"CeilingAngle not set!");
+        if (CeilingAngleWithoutPillar == null) throw new System.Exception($"CeilingAngleWithoutPillar not set!");
         if (CeilingBranch == null) throw new System.Exception($"CeilingBranch not set!");
+        if (CeilingBranchWithoutLeftPillar == null) throw new System.Exception($"CeilingBranchWithoutLeftPillar not set!");
+        if (CeilingBranchWithoutRightPillar == null) throw new System.Exception($"CeilingBranchWithoutRightPillar not set!");
+        if (CeilingBranchWithoutBothPillars == null) throw new System.Exception($"CeilingBranchWithoutBothPillars not set!");
         if (CeilingCrossing == null) throw new System.Exception($"CeilingCrossing not set!");
         if (StartPoint == null) throw new System.Exception($"StartPoint not set!");
         if (EndPoint == null) throw new System.Exception($"EndPoint not set!");
@@ -203,6 +215,7 @@ public class MapController : MonoBehaviour
         }
 
         CellTypeDefinition(map_main);
+        VoidsForPremisesDefinition(map_main);
 
         map_main[height - 2, 1] = 5; //set start point
         map_main[1, width - 2] = 6; //set end point
@@ -290,9 +303,9 @@ public class MapController : MonoBehaviour
         int numberOfNeighbors;
         bool[] directionOfNeighbors = new bool[4]; // Left - Up - Right - Down
 
-        for (int h = 1; h < map.GetUpperBound(0); h++)
+        for (int h = 1; h < map.GetUpperBound(0); h += 2)
         {
-            for (int w = 1; w < map.GetUpperBound(1); w++)
+            for (int w = 1; w < map.GetUpperBound(1); w += 2)
             {
                 if (map[h, w] >= 2)
                 {
@@ -381,19 +394,19 @@ public class MapController : MonoBehaviour
                     // Определение направления для клетки с тремя открытыми стенками
                     if (numberOfNeighbors == 3)
                     {
-                        if (directionOfNeighbors[0] && directionOfNeighbors[1] && directionOfNeighbors[2])
+                        if (directionOfNeighbors[3] && directionOfNeighbors[0] && directionOfNeighbors[1])
                         {
                             map[h, w] = (int)BranchDirection.LeftBetweenUpAndDown;
                         }
-                        if (directionOfNeighbors[1] && directionOfNeighbors[2] && directionOfNeighbors[3])
+                        if (directionOfNeighbors[0] && directionOfNeighbors[1] && directionOfNeighbors[2])
                         {
                             map[h, w] = (int)BranchDirection.UpBetweenLeftAndRight;
                         }
-                        if (directionOfNeighbors[2] && directionOfNeighbors[3] && directionOfNeighbors[0])
+                        if (directionOfNeighbors[1] && directionOfNeighbors[2] && directionOfNeighbors[3])
                         {
                             map[h, w] = (int)BranchDirection.RightBetweenDownAndUp;
                         }
-                        if (directionOfNeighbors[3] && directionOfNeighbors[0] && directionOfNeighbors[1])
+                        if (directionOfNeighbors[2] && directionOfNeighbors[3] && directionOfNeighbors[0])
                         {
                             map[h, w] = (int)BranchDirection.DownBetweenRightAndLeft;
                         }
@@ -410,6 +423,233 @@ public class MapController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Determination of voids for premises (removal of pillars)
+    /// </summary>
+    /// <param name="map"> Map (array of integers) </param>
+    /// <remarks> Определение пустот под помещения (удаление столбов) </remarks>
+    private void VoidsForPremisesDefinition(int[,] map)
+    {
+        //int numberOfNeighbors;
+        //bool[] directionOfNeighbors = new bool[4]; // Left - Up - Right - Down
+        int[,] mapAdditional = new int[map.GetLength(0), map.GetLength(1)];
+
+        for (int h = 1; h < map.GetUpperBound(0); h += 2)
+        {
+            for (int w = 1; w < map.GetUpperBound(1); w += 2)
+            {
+                // For angle
+                if (map[h, w] == (int)AngleDirection.LeftToUp)
+                {
+                    if (map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0)
+                    {
+                        mapAdditional[h, w] = (int)AngleDirection.LeftToUpWithoutPillar;
+                    }
+
+                    //if ((map[h - 1, w] != 0 && map[h - 2, w + 1] != 0) || (map[h, w + 1] != 0 && map[h - 1, w + 2] != 0))
+                    //{
+                    //    mapAdditional[h, w] = (int)AngleDirection.LeftToUpWithoutPillar;
+                    //}
+
+                    //if ((map[h - 2, w] == (int)AngleDirection.UpToRight ||
+                    //    map[h - 2, w] == (int)BranchDirection.UpBetweenLeftAndRight ||
+                    //    map[h - 2, w] == (int)BranchDirection.RightBetweenDownAndUp ||
+                    //    map[h - 2, w] == (int)CrossingDirection.AllSides) &&
+                    //    (map[h, w + 2] == (int)AngleDirection.DownToLeft ||
+                    //    map[h, w + 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
+                    //    map[h, w + 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
+                    //    map[h, w + 2] == (int)CrossingDirection.AllSides))
+                    //{
+                    //    mapAdditional[h, w] = (int)AngleDirection.LeftToUpWithoutPillar;
+                    //}
+                }
+                if (map[h, w] == (int)AngleDirection.UpToRight)
+                {
+                    //if ((map[h, w + 2] == (int)AngleDirection.RightToDown || 
+                    //    map[h, w + 2] == (int)BranchDirection.RightBetweenDownAndUp || 
+                    //    map[h, w + 2] == (int)BranchDirection.DownBetweenRightAndLeft || 
+                    //    map[h, w + 2] == (int)CrossingDirection.AllSides) && 
+                    //    (map[h + 2, w] == (int)AngleDirection.LeftToUp || 
+                    //    map[h + 2, w] == (int)BranchDirection.LeftBetweenUpAndDown || 
+                    //    map[h + 2, w] == (int)BranchDirection.UpBetweenLeftAndRight || 
+                    //    map[h + 2, w] == (int)CrossingDirection.AllSides))
+                    //{
+                    //    mapAdditional[h, w] = (int)AngleDirection.UpToRightWithoutPillar;
+                    //}
+                }
+                if (map[h, w] == (int)AngleDirection.RightToDown)
+                {
+                    //if ((map[h + 2, w] == (int)AngleDirection.DownToLeft ||
+                    //    map[h +2, w] == (int)BranchDirection.DownBetweenRightAndLeft ||
+                    //    map[h + 2, w] == (int)BranchDirection.LeftBetweenUpAndDown ||
+                    //    map[h + 2, w] == (int)CrossingDirection.AllSides) &&
+                    //    (map[h, w - 2] == (int)AngleDirection.UpToRight ||
+                    //    map[h, w - 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
+                    //    map[h, w - 2] == (int)BranchDirection.RightBetweenDownAndUp ||
+                    //    map[h, w - 2] == (int)CrossingDirection.AllSides))
+                    //{
+                    //    mapAdditional[h, w] = (int)AngleDirection.RightToDownWithoutPillar;
+                    //}
+                }
+                if (map[h, w] == (int)AngleDirection.DownToLeft)
+                {
+                    //if ((map[h, w - 2] == (int)AngleDirection.LeftToUp ||
+                    //    map[h, w - 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
+                    //    map[h, w - 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
+                    //    map[h, w - 2] == (int)CrossingDirection.AllSides) &&
+                    //    (map[h - 2, w] == (int)AngleDirection.RightToDown ||
+                    //    map[h - 2, w] == (int)BranchDirection.RightBetweenDownAndUp ||
+                    //    map[h - 2, w] == (int)BranchDirection.DownBetweenRightAndLeft ||
+                    //    map[h - 2, w] == (int)CrossingDirection.AllSides))
+                    //{
+                    //    mapAdditional[h, w] = (int)AngleDirection.DownToLeftWithoutPillar;
+                    //}
+                }
+
+                // For branch
+                //bool isLeftPillar = true;
+                //bool isRightPillar = true;
+                //if (map[h, w] == (int)BranchDirection.LeftBetweenUpAndDown)
+                //{
+                //    if (map[h - 2, w] == (int)BranchDirection.RightBetweenDownAndUp ||
+                //        map[h - 2, w] == (int)CrossingDirection.AllSides)
+                //    {
+                //        if (map[h - 2, w + 2] == (int)AngleDirection.RightToDown ||
+                //            map[h - 2, w + 2] == (int)BranchDirection.RightBetweenDownAndUp ||
+                //            map[h - 2, w + 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
+                //            map[h - 2, w + 2] == (int)CrossingDirection.AllSides)
+                //        {
+                //            isRightPillar = false;
+                //        }
+                //        if (map[h - 2, w - 2] == (int)AngleDirection.UpToRight ||
+                //            map[h - 2, w - 2] == (int)BranchDirection.RightBetweenDownAndUp ||
+                //            map[h - 2, w - 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
+                //            map[h - 2, w - 2] == (int)CrossingDirection.AllSides)
+                //        {
+                //            isLeftPillar = false;
+                //        }
+                //    }
+                //    if (map[h, w + 2] == (int)AngleDirection.DownToLeft ||
+                //        map[h, w + 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
+                //        map[h, w + 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
+                //        map[h, w + 2] == (int)CrossingDirection.AllSides)
+                //    {
+                //        if (map[h - 2, w + 2] == (int)AngleDirection.RightToDown ||
+                //            map[h - 2, w + 2] == (int)BranchDirection.RightBetweenDownAndUp ||
+                //            map[h - 2, w + 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
+                //            map[h - 2, w + 2] == (int)CrossingDirection.AllSides)
+                //        {
+                //            isRightPillar = false;
+                //        }
+                //    }
+                //    if (map[h, w - 2] == (int)AngleDirection.LeftToUp ||
+                //        map[h, w - 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
+                //        map[h, w - 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
+                //        map[h, w - 2] == (int)CrossingDirection.AllSides)
+                //    {
+                //        if (map[h - 2, w - 2] == (int)AngleDirection.UpToRight ||
+                //            map[h - 2, w - 2] == (int)BranchDirection.RightBetweenDownAndUp ||
+                //            map[h - 2, w - 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
+                //            map[h - 2, w - 2] == (int)CrossingDirection.AllSides)
+                //        {
+                //            isLeftPillar = false;
+                //        }
+                //    }
+                //    if (!isLeftPillar && !isRightPillar)
+                //    {
+                //        mapAdditional[h, w] = (int)BranchDirection.LeftBetweenUpAndDownWithoutBothPillars;
+                //    }
+                //    else
+                //    {
+                //        if (!isLeftPillar)
+                //        {
+                //            mapAdditional[h, w] = (int)BranchDirection.LeftBetweenUpAndDownWithoutDownPillar;
+                //        }
+                //        if (!isRightPillar)
+                //        {
+                //            mapAdditional[h, w] = (int)BranchDirection.LeftBetweenUpAndDownWithoutUpPillar;
+                //        }
+                //    }
+                //}
+
+                //Debug.Log($"---------------------------- {h} {w} {map[h, w]} {map[h + 1, w]}");
+                //if (map[h, w] == (int)BranchDirection.RightBetweenDownAndUp)
+                //{
+                //    if (map[h + 2, w] == (int)BranchDirection.LeftBetweenUpAndDown ||
+                //        map[h + 2, w] == (int)CrossingDirection.AllSides)
+                //    {
+                //        if (map[h + 2, w + 2] == (int)AngleDirection.LeftToUp ||
+                //            map[h + 2, w + 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
+                //            map[h + 2, w + 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
+                //            map[h + 2, w + 2] == (int)CrossingDirection.AllSides)
+                //        {
+                //            isRightPillar = false;
+                //        }
+                //        if (map[h + 2, w - 2] == (int)AngleDirection.DownToLeft ||
+                //            map[h + 2, w - 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
+                //            map[h + 2, w - 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
+                //            map[h + 2, w - 2] == (int)CrossingDirection.AllSides)
+                //        {
+                //            isLeftPillar = false;
+                //        }
+                //    }
+                //    if (map[h, w + 2] == (int)AngleDirection.UpToRight ||
+                //        map[h, w + 2] == (int)BranchDirection.RightBetweenDownAndUp ||
+                //        map[h, w + 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
+                //        map[h, w + 2] == (int)CrossingDirection.AllSides)
+                //    {
+                //        if (map[h + 2, w + 2] == (int)AngleDirection.LeftToUp ||
+                //            map[h + 2, w + 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
+                //            map[h + 2, w + 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
+                //            map[h + 2, w + 2] == (int)CrossingDirection.AllSides)
+                //        {
+                //            isRightPillar = false;
+                //        }
+                //    }
+                //    if (map[h, w - 2] == (int)AngleDirection.RightToDown ||
+                //        map[h, w - 2] == (int)BranchDirection.RightBetweenDownAndUp ||
+                //        map[h, w - 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
+                //        map[h, w - 2] == (int)CrossingDirection.AllSides)
+                //    {
+                //        if (map[h + 2, w - 2] == (int)AngleDirection.DownToLeft ||
+                //            map[h + 2, w - 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
+                //            map[h + 2, w - 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
+                //            map[h + 2, w - 2] == (int)CrossingDirection.AllSides)
+                //        {
+                //            isLeftPillar = false;
+                //        }
+                //    }
+                //    if (!isLeftPillar && !isRightPillar)
+                //    {
+                //        mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutBothPillars;
+                //    }
+                //    else
+                //    {
+                //        if (!isLeftPillar)
+                //        {
+                //            mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutDownPillar;
+                //        }
+                //        if (!isRightPillar)
+                //        {
+                //            mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutUpPillar;
+                //        }
+                //    }
+                //}
+            }
+        }
+
+        for (int h = 1; h < map.GetUpperBound(0); h++)
+        {
+            for (int w = 1; w < map.GetUpperBound(1); w++)
+            {
+                if (mapAdditional[h, w] != 0)
+                {
+                    map[h, w] = mapAdditional[h, w];
+                }
+            }
+        }
+    }
+
     private void Drawing_Map(int[,] map)
     {
         Removal_Of_Invironment();
@@ -417,7 +657,7 @@ public class MapController : MonoBehaviour
         {
             for (int j = 1; j <= map.GetUpperBound(1); j += 2)
             {
-                //Debug.Log($"Draw {map[i, j]} ({i}, {j})");
+                Debug.Log($"Draw {map[i, j]} ({i}, {j})");
                 coordinates = new Vector3(j * 1f, 2f, (map.GetUpperBound(0) - i) * 1f);
                 if (map[i, j] == 5)
                 {
@@ -449,6 +689,8 @@ public class MapController : MonoBehaviour
                 {
                     Createanenvironmentinstance(CeilingBlindAlley, DirectionForInstance.Down);
                 }
+
+                // CeilingStraight
                 if (map[i, j] == (int)StraightDirection.LeftToRight)
                 {
                     Createanenvironmentinstance(CeilingStraight, DirectionForInstance.Left);
@@ -457,38 +699,83 @@ public class MapController : MonoBehaviour
                 {
                     Createanenvironmentinstance(CeilingStraight, DirectionForInstance.Up);
                 }
+
+                // CeilingAngle
                 if (map[i, j] == (int)AngleDirection.LeftToUp)
-                {
-                    Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Up);
-                }
-                if (map[i, j] == (int)AngleDirection.UpToRight)
-                {
-                    Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Right);
-                }
-                if (map[i, j] == (int)AngleDirection.RightToDown)
-                {
-                    Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Down);
-                }
-                if (map[i, j] == (int)AngleDirection.DownToLeft)
                 {
                     Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Left);
                 }
+                if (map[i, j] == (int)AngleDirection.LeftToUpWithoutPillar)
+                {
+                    Createanenvironmentinstance(CeilingAngleWithoutPillar, DirectionForInstance.Left);
+                }
+                if (map[i, j] == (int)AngleDirection.UpToRight)
+                {
+                    Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Up);
+                }
+                if (map[i, j] == (int)AngleDirection.UpToRightWithoutPillar)
+                {
+                    Createanenvironmentinstance(CeilingAngleWithoutPillar, DirectionForInstance.Up);
+                }
+                if (map[i, j] == (int)AngleDirection.RightToDown)
+                {
+                    Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Right);
+                }
+                if (map[i, j] == (int)AngleDirection.RightToDownWithoutPillar)
+                {
+                    Createanenvironmentinstance(CeilingAngleWithoutPillar, DirectionForInstance.Right);
+                }
+                if (map[i, j] == (int)AngleDirection.DownToLeft)
+                {
+                    Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Down);
+                }
+                if (map[i, j] == (int)AngleDirection.DownToLeftWithoutPillar)
+                {
+                    Createanenvironmentinstance(CeilingAngleWithoutPillar, DirectionForInstance.Down);
+                }
+
+                // CeilingBranch
                 if (map[i, j] == (int)BranchDirection.LeftBetweenUpAndDown)
-                {
-                    Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Right);
-                }
-                if (map[i, j] == (int)BranchDirection.UpBetweenLeftAndRight)
-                {
-                    Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Down);
-                }
-                if (map[i, j] == (int)BranchDirection.RightBetweenDownAndUp)
                 {
                     Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Left);
                 }
-                if (map[i, j] == (int)BranchDirection.DownBetweenRightAndLeft)
+                if (map[i, j] == (int)BranchDirection.LeftBetweenUpAndDownWithoutDownPillar)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutLeftPillar, DirectionForInstance.Left);
+                }
+                if (map[i, j] == (int)BranchDirection.LeftBetweenUpAndDownWithoutUpPillar)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutRightPillar, DirectionForInstance.Left);
+                }
+                if (map[i, j] == (int)BranchDirection.LeftBetweenUpAndDownWithoutBothPillars)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutBothPillars, DirectionForInstance.Left);
+                }
+                if (map[i, j] == (int)BranchDirection.UpBetweenLeftAndRight)
                 {
                     Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Up);
                 }
+                if (map[i, j] == (int)BranchDirection.RightBetweenDownAndUp)
+                {
+                    Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Right);
+                }
+                if (map[i, j] == (int)BranchDirection.RightBetweenDownAndUpWithoutDownPillar)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutLeftPillar, DirectionForInstance.Right);
+                }
+                if (map[i, j] == (int)BranchDirection.RightBetweenDownAndUpWithoutUpPillar)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutRightPillar, DirectionForInstance.Right);
+                }
+                if (map[i, j] == (int)BranchDirection.RightBetweenDownAndUpWithoutBothPillars)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutBothPillars, DirectionForInstance.Right);
+                }
+                if (map[i, j] == (int)BranchDirection.DownBetweenRightAndLeft)
+                {
+                    Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Down);
+                }
+
                 if (map[i, j] == (int)CrossingDirection.AllSides)
                 {
                     Createanenvironmentinstance(CeilingCrossing);

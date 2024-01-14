@@ -411,6 +411,7 @@ MonoBehaviour:
   CeilingStraight: {fileID: 8914994773114636678, guid: d80180791795b3f4b98ec1f606ceadfe, type: 3}
   CeilingBlindAlley: {fileID: 2985179928556885707, guid: b4be8e478acbc4d41801994eb504cd9d, type: 3}
   CeilingAngle: {fileID: 2883842444844039943, guid: 629e02467984a4f45a4b9919bfd4d0f7, type: 3}
+  CeilingAngleWithoutPillar: {fileID: 7458647882911810472, guid: fab902148007dac46a480e1511c987e0, type: 3}
   CeilingBranch: {fileID: 436322755085410965, guid: ab22497bd765792479f218837fd87b50, type: 3}
   CeilingCrossing: {fileID: 3931855815827336201, guid: 119d9535501a7dc40bd1376d6d5169f0, type: 3}
   StartPoint: {fileID: 2041947649811253968, guid: 83b26e8542cc4b44d8679cfccd5c50b7, type: 3}

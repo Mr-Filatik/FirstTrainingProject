@@ -45,7 +45,13 @@ public enum BlindAlleyDirection
 /// <remarks> Направление для прямой ячейки </remarks>
 public enum StraightDirection
 {
+    /// <summary>
+    /// Left and right are empty
+    /// </summary>
     LeftToRight = 21,
+    /// <summary>
+    /// Up and down are empty
+    /// </summary>
     UpToDown = 22
 }
 
@@ -55,10 +61,38 @@ public enum StraightDirection
 /// <remarks> Направление для угловой ячейки </remarks>
 public enum AngleDirection
 {
+    /// <summary>
+    /// Left and right are empty
+    /// </summary>
     LeftToUp = 23,
+    /// <summary>
+    /// Left and right are empty
+    /// </summary>
     UpToRight = 24,
+    /// <summary>
+    /// Left and right are empty
+    /// </summary>
     RightToDown = 25,
-    DownToLeft = 26
+    /// <summary>
+    /// Left and right are empty
+    /// </summary>
+    DownToLeft = 26,
+    /// <summary>
+    /// Left and right are empty without pillar
+    /// </summary>
+    LeftToUpWithoutPillar = 231,
+    /// <summary>
+    /// Left and right are empty without pillar
+    /// </summary>
+    UpToRightWithoutPillar = 241,
+    /// <summary>
+    /// Left and right are empty without pillar
+    /// </summary>
+    RightToDownWithoutPillar = 251,
+    /// <summary>
+    /// Left and right are empty without pillar
+    /// </summary>
+    DownToLeftWithoutPillar = 261,
 }
 
 /// <summary>
@@ -70,7 +104,19 @@ public enum BranchDirection
     LeftBetweenUpAndDown = 31,
     UpBetweenLeftAndRight = 32,
     RightBetweenDownAndUp = 33,
-    DownBetweenRightAndLeft = 34
+    DownBetweenRightAndLeft = 34,
+    LeftBetweenUpAndDownWithoutUpPillar = 311,
+    LeftBetweenUpAndDownWithoutDownPillar = 312,
+    LeftBetweenUpAndDownWithoutBothPillars = 313,
+    UpBetweenLeftAndRightWithoutLeftPillar = 321,
+    UpBetweenLeftAndRightWithoutRightPillar = 322,
+    UpBetweenLeftAndRightWithoutBothPillars = 323,
+    RightBetweenDownAndUpWithoutDownPillar = 331,
+    RightBetweenDownAndUpWithoutUpPillar = 332,
+    RightBetweenDownAndUpWithoutBothPillars = 333,
+    DownBetweenRightAndLeftWithoutRightPillar = 341,
+    DownBetweenRightAndLeftWithoutLeftPillar = 342,
+    DownBetweenRightAndLeftWithoutBothPillars = 343,
 }
 
 /// <summary>
