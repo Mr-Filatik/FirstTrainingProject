@@ -413,7 +413,11 @@ MonoBehaviour:
   CeilingAngle: {fileID: 2883842444844039943, guid: 629e02467984a4f45a4b9919bfd4d0f7, type: 3}
   CeilingAngleWithoutPillar: {fileID: 7458647882911810472, guid: fab902148007dac46a480e1511c987e0, type: 3}
   CeilingBranch: {fileID: 436322755085410965, guid: ab22497bd765792479f218837fd87b50, type: 3}
+  CeilingBranchWithoutLeftPillar: {fileID: 7684339072303218338, guid: 0105b9e6bd8e38f43a63e6cd07561a90, type: 3}
+  CeilingBranchWithoutRightPillar: {fileID: 2186472616194231476, guid: a10543f57f90dc2479ce3af83dea57c6, type: 3}
+  CeilingBranchWithoutBothPillars: {fileID: 8805073208231068980, guid: 013a3a244b8b10e498d754b5ab4f5120, type: 3}
   CeilingCrossing: {fileID: 3931855815827336201, guid: 119d9535501a7dc40bd1376d6d5169f0, type: 3}
+  CeilingCrossingWithoutFourPillar: {fileID: 1212538509459770793, guid: 460d1bc5557882e49959a4d90fb19600, type: 3}
   StartPoint: {fileID: 2041947649811253968, guid: 83b26e8542cc4b44d8679cfccd5c50b7, type: 3}
   EndPoint: {fileID: 2872749501355558295, guid: 49ddafa06d8646949a86f344b1bc22a8, type: 3}
 --- !u!4 &1080821409

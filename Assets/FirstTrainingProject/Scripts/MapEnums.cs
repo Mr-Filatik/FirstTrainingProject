@@ -125,5 +125,37 @@ public enum BranchDirection
 /// <remarks> Направление для ячейки пересечения </remarks>
 public enum CrossingDirection
 {
-    AllSides = 41
+    AllSides = 41,
+
+    AllSidesWithoutOnePillar = 411,
+
+    AllSidesWithoutOnePillarLeftUp = 4111,
+    AllSidesWithoutOnePillarUpRight = 4112,
+    AllSidesWithoutOnePillarRightDown = 4113,
+    AllSidesWithoutOnePillarDownLeft = 4114,
+
+    AllSidesWithoutTwoPillars = 412,
+
+    AllSidesWithoutTwoPillarsNeighbours = 4121,
+
+    AllSidesWithoutTwoPillarsNeighboursLeft = 41211,
+    AllSidesWithoutTwoPillarsNeighboursUp = 41212,
+    AllSidesWithoutTwoPillarsNeighboursRight = 41213,
+    AllSidesWithoutTwoPillarsNeighboursDown = 41214,
+
+    AllSidesWithoutTwoPillarsNotNeighbours = 4122,
+
+    AllSidesWithoutTwoPillarsNotNeighboursLeft = 41221,
+    AllSidesWithoutTwoPillarsNotNeighboursUp = 41222,
+    AllSidesWithoutTwoPillarsNotNeighboursRight = 41223,
+    AllSidesWithoutTwoPillarsNotNeighboursDown = 41224,
+
+    AllSidesWithoutThreePillars = 413,
+
+    AllSidesWithoutThreePillarsLeft = 4131,
+    AllSidesWithoutThreePillarsUp = 4132,
+    AllSidesWithoutThreePillarsRight = 4133,
+    AllSidesWithoutThreePillarsDown = 4134,
+
+    AllSidesWithoutFourPillars = 414
 }

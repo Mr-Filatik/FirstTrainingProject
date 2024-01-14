@@ -12,7 +12,7 @@ public class MapController : MonoBehaviour
     [Header("Enviroment prefabs")]
     //public GameObject WallBlank;
     //public GameObject FloorBlank;
-    [SerializeField] 
+    [SerializeField]
     private GameObject CeilingStraight;
     [SerializeField]
     private GameObject CeilingBlindAlley;
@@ -30,6 +30,9 @@ public class MapController : MonoBehaviour
     private GameObject CeilingBranchWithoutBothPillars;
     [SerializeField]
     private GameObject CeilingCrossing;
+
+    [SerializeField]
+    private GameObject CeilingCrossingWithoutFourPillar;
     //public GameObject DoorLattice;
     [SerializeField]
     private GameObject StartPoint;
@@ -74,6 +77,8 @@ public class MapController : MonoBehaviour
         if (CeilingBranchWithoutRightPillar == null) throw new System.Exception($"CeilingBranchWithoutRightPillar not set!");
         if (CeilingBranchWithoutBothPillars == null) throw new System.Exception($"CeilingBranchWithoutBothPillars not set!");
         if (CeilingCrossing == null) throw new System.Exception($"CeilingCrossing not set!");
+
+        if (CeilingCrossingWithoutFourPillar == null) throw new System.Exception($"CeilingCrossingWithoutFourPillar not set!");
         if (StartPoint == null) throw new System.Exception($"StartPoint not set!");
         if (EndPoint == null) throw new System.Exception($"EndPoint not set!");
 
@@ -82,7 +87,7 @@ public class MapController : MonoBehaviour
         map_main = new int[height, width];
         //if (PlayerPrefs.GetString("Map") == "")
         //{
-            CreatingMap();
+        CreatingMap();
         //Map_Saver();
         //GameObject.Find("Enemy").GetComponent<NewBehaviourScript>().Map_Load();
         //}
@@ -430,8 +435,6 @@ public class MapController : MonoBehaviour
     /// <remarks> Определение пустот под помещения (удаление столбов) </remarks>
     private void VoidsForPremisesDefinition(int[,] map)
     {
-        //int numberOfNeighbors;
-        //bool[] directionOfNeighbors = new bool[4]; // Left - Up - Right - Down
         int[,] mapAdditional = new int[map.GetLength(0), map.GetLength(1)];
 
         for (int h = 1; h < map.GetUpperBound(0); h += 2)
@@ -445,196 +448,186 @@ public class MapController : MonoBehaviour
                     {
                         mapAdditional[h, w] = (int)AngleDirection.LeftToUpWithoutPillar;
                     }
-
-                    //if ((map[h - 1, w] != 0 && map[h - 2, w + 1] != 0) || (map[h, w + 1] != 0 && map[h - 1, w + 2] != 0))
-                    //{
-                    //    mapAdditional[h, w] = (int)AngleDirection.LeftToUpWithoutPillar;
-                    //}
-
-                    //if ((map[h - 2, w] == (int)AngleDirection.UpToRight ||
-                    //    map[h - 2, w] == (int)BranchDirection.UpBetweenLeftAndRight ||
-                    //    map[h - 2, w] == (int)BranchDirection.RightBetweenDownAndUp ||
-                    //    map[h - 2, w] == (int)CrossingDirection.AllSides) &&
-                    //    (map[h, w + 2] == (int)AngleDirection.DownToLeft ||
-                    //    map[h, w + 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
-                    //    map[h, w + 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
-                    //    map[h, w + 2] == (int)CrossingDirection.AllSides))
-                    //{
-                    //    mapAdditional[h, w] = (int)AngleDirection.LeftToUpWithoutPillar;
-                    //}
                 }
                 if (map[h, w] == (int)AngleDirection.UpToRight)
                 {
-                    //if ((map[h, w + 2] == (int)AngleDirection.RightToDown || 
-                    //    map[h, w + 2] == (int)BranchDirection.RightBetweenDownAndUp || 
-                    //    map[h, w + 2] == (int)BranchDirection.DownBetweenRightAndLeft || 
-                    //    map[h, w + 2] == (int)CrossingDirection.AllSides) && 
-                    //    (map[h + 2, w] == (int)AngleDirection.LeftToUp || 
-                    //    map[h + 2, w] == (int)BranchDirection.LeftBetweenUpAndDown || 
-                    //    map[h + 2, w] == (int)BranchDirection.UpBetweenLeftAndRight || 
-                    //    map[h + 2, w] == (int)CrossingDirection.AllSides))
-                    //{
-                    //    mapAdditional[h, w] = (int)AngleDirection.UpToRightWithoutPillar;
-                    //}
+                    if (map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0)
+                    {
+                        mapAdditional[h, w] = (int)AngleDirection.UpToRightWithoutPillar;
+                    }
                 }
                 if (map[h, w] == (int)AngleDirection.RightToDown)
                 {
-                    //if ((map[h + 2, w] == (int)AngleDirection.DownToLeft ||
-                    //    map[h +2, w] == (int)BranchDirection.DownBetweenRightAndLeft ||
-                    //    map[h + 2, w] == (int)BranchDirection.LeftBetweenUpAndDown ||
-                    //    map[h + 2, w] == (int)CrossingDirection.AllSides) &&
-                    //    (map[h, w - 2] == (int)AngleDirection.UpToRight ||
-                    //    map[h, w - 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
-                    //    map[h, w - 2] == (int)BranchDirection.RightBetweenDownAndUp ||
-                    //    map[h, w - 2] == (int)CrossingDirection.AllSides))
-                    //{
-                    //    mapAdditional[h, w] = (int)AngleDirection.RightToDownWithoutPillar;
-                    //}
+                    if (map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0)
+                    {
+                        mapAdditional[h, w] = (int)AngleDirection.RightToDownWithoutPillar;
+                    }
                 }
                 if (map[h, w] == (int)AngleDirection.DownToLeft)
                 {
-                    //if ((map[h, w - 2] == (int)AngleDirection.LeftToUp ||
-                    //    map[h, w - 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
-                    //    map[h, w - 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
-                    //    map[h, w - 2] == (int)CrossingDirection.AllSides) &&
-                    //    (map[h - 2, w] == (int)AngleDirection.RightToDown ||
-                    //    map[h - 2, w] == (int)BranchDirection.RightBetweenDownAndUp ||
-                    //    map[h - 2, w] == (int)BranchDirection.DownBetweenRightAndLeft ||
-                    //    map[h - 2, w] == (int)CrossingDirection.AllSides))
-                    //{
-                    //    mapAdditional[h, w] = (int)AngleDirection.DownToLeftWithoutPillar;
-                    //}
+                    if (map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0)
+                    {
+                        mapAdditional[h, w] = (int)AngleDirection.DownToLeftWithoutPillar;
+                    }
                 }
 
                 // For branch
-                //bool isLeftPillar = true;
-                //bool isRightPillar = true;
-                //if (map[h, w] == (int)BranchDirection.LeftBetweenUpAndDown)
-                //{
-                //    if (map[h - 2, w] == (int)BranchDirection.RightBetweenDownAndUp ||
-                //        map[h - 2, w] == (int)CrossingDirection.AllSides)
-                //    {
-                //        if (map[h - 2, w + 2] == (int)AngleDirection.RightToDown ||
-                //            map[h - 2, w + 2] == (int)BranchDirection.RightBetweenDownAndUp ||
-                //            map[h - 2, w + 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
-                //            map[h - 2, w + 2] == (int)CrossingDirection.AllSides)
-                //        {
-                //            isRightPillar = false;
-                //        }
-                //        if (map[h - 2, w - 2] == (int)AngleDirection.UpToRight ||
-                //            map[h - 2, w - 2] == (int)BranchDirection.RightBetweenDownAndUp ||
-                //            map[h - 2, w - 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
-                //            map[h - 2, w - 2] == (int)CrossingDirection.AllSides)
-                //        {
-                //            isLeftPillar = false;
-                //        }
-                //    }
-                //    if (map[h, w + 2] == (int)AngleDirection.DownToLeft ||
-                //        map[h, w + 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
-                //        map[h, w + 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
-                //        map[h, w + 2] == (int)CrossingDirection.AllSides)
-                //    {
-                //        if (map[h - 2, w + 2] == (int)AngleDirection.RightToDown ||
-                //            map[h - 2, w + 2] == (int)BranchDirection.RightBetweenDownAndUp ||
-                //            map[h - 2, w + 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
-                //            map[h - 2, w + 2] == (int)CrossingDirection.AllSides)
-                //        {
-                //            isRightPillar = false;
-                //        }
-                //    }
-                //    if (map[h, w - 2] == (int)AngleDirection.LeftToUp ||
-                //        map[h, w - 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
-                //        map[h, w - 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
-                //        map[h, w - 2] == (int)CrossingDirection.AllSides)
-                //    {
-                //        if (map[h - 2, w - 2] == (int)AngleDirection.UpToRight ||
-                //            map[h - 2, w - 2] == (int)BranchDirection.RightBetweenDownAndUp ||
-                //            map[h - 2, w - 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
-                //            map[h - 2, w - 2] == (int)CrossingDirection.AllSides)
-                //        {
-                //            isLeftPillar = false;
-                //        }
-                //    }
-                //    if (!isLeftPillar && !isRightPillar)
-                //    {
-                //        mapAdditional[h, w] = (int)BranchDirection.LeftBetweenUpAndDownWithoutBothPillars;
-                //    }
-                //    else
-                //    {
-                //        if (!isLeftPillar)
-                //        {
-                //            mapAdditional[h, w] = (int)BranchDirection.LeftBetweenUpAndDownWithoutDownPillar;
-                //        }
-                //        if (!isRightPillar)
-                //        {
-                //            mapAdditional[h, w] = (int)BranchDirection.LeftBetweenUpAndDownWithoutUpPillar;
-                //        }
-                //    }
-                //}
+                bool isLeftPillar = true;
+                bool isRightPillar = true;
+                if (map[h, w] == (int)BranchDirection.LeftBetweenUpAndDown)
+                {
+                    if (map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0)
+                    {
+                        isRightPillar = false;
+                    }
+                    if (map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0)
+                    {
+                        isLeftPillar = false;
+                    }
+                    if (!isLeftPillar && !isRightPillar)
+                    {
+                        mapAdditional[h, w] = (int)BranchDirection.LeftBetweenUpAndDownWithoutBothPillars;
+                    }
+                    else
+                    {
+                        if (!isLeftPillar)
+                        {
+                            mapAdditional[h, w] = (int)BranchDirection.LeftBetweenUpAndDownWithoutDownPillar;
+                        }
+                        if (!isRightPillar)
+                        {
+                            mapAdditional[h, w] = (int)BranchDirection.LeftBetweenUpAndDownWithoutUpPillar;
+                        }
+                    }
+                }
+                if (map[h, w] == (int)BranchDirection.UpBetweenLeftAndRight)
+                {
+                    if (map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0)
+                    {
+                        isRightPillar = false;
+                    }
+                    if (map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0)
+                    {
+                        isLeftPillar = false;
+                    }
+                    if (!isLeftPillar && !isRightPillar)
+                    {
+                        mapAdditional[h, w] = (int)BranchDirection.UpBetweenLeftAndRightWithoutBothPillars;
+                    }
+                    else
+                    {
+                        if (!isLeftPillar)
+                        {
+                            mapAdditional[h, w] = (int)BranchDirection.UpBetweenLeftAndRightWithoutLeftPillar;
+                        }
+                        if (!isRightPillar)
+                        {
+                            mapAdditional[h, w] = (int)BranchDirection.UpBetweenLeftAndRightWithoutRightPillar;
+                        }
+                    }
+                }
+                if (map[h, w] == (int)BranchDirection.RightBetweenDownAndUp)
+                {
+                    if (map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0)
+                    {
+                        isRightPillar = false;
+                    }
+                    if (map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0)
+                    {
+                        isLeftPillar = false;
+                    }
+                    if (!isLeftPillar && !isRightPillar)
+                    {
+                        mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutBothPillars;
+                    }
+                    else
+                    {
+                        if (!isLeftPillar)
+                        {
+                            mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutUpPillar;
+                        }
+                        if (!isRightPillar)
+                        {
+                            mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutDownPillar;
+                        }
+                    }
+                }
+                if (map[h, w] == (int)BranchDirection.DownBetweenRightAndLeft)
+                {
+                    if (map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0)
+                    {
+                        isRightPillar = false;
+                    }
+                    if (map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0)
+                    {
+                        isLeftPillar = false;
+                    }
+                    if (!isLeftPillar && !isRightPillar)
+                    {
+                        mapAdditional[h, w] = (int)BranchDirection.DownBetweenRightAndLeftWithoutBothPillars;
+                    }
+                    else
+                    {
+                        if (!isLeftPillar)
+                        {
+                            mapAdditional[h, w] = (int)BranchDirection.DownBetweenRightAndLeftWithoutRightPillar;
+                        }
+                        if (!isRightPillar)
+                        {
+                            mapAdditional[h, w] = (int)BranchDirection.DownBetweenRightAndLeftWithoutLeftPillar;
+                        }
+                    }
+                }
 
-                //Debug.Log($"---------------------------- {h} {w} {map[h, w]} {map[h + 1, w]}");
-                //if (map[h, w] == (int)BranchDirection.RightBetweenDownAndUp)
-                //{
-                //    if (map[h + 2, w] == (int)BranchDirection.LeftBetweenUpAndDown ||
-                //        map[h + 2, w] == (int)CrossingDirection.AllSides)
-                //    {
-                //        if (map[h + 2, w + 2] == (int)AngleDirection.LeftToUp ||
-                //            map[h + 2, w + 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
-                //            map[h + 2, w + 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
-                //            map[h + 2, w + 2] == (int)CrossingDirection.AllSides)
-                //        {
-                //            isRightPillar = false;
-                //        }
-                //        if (map[h + 2, w - 2] == (int)AngleDirection.DownToLeft ||
-                //            map[h + 2, w - 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
-                //            map[h + 2, w - 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
-                //            map[h + 2, w - 2] == (int)CrossingDirection.AllSides)
-                //        {
-                //            isLeftPillar = false;
-                //        }
-                //    }
-                //    if (map[h, w + 2] == (int)AngleDirection.UpToRight ||
-                //        map[h, w + 2] == (int)BranchDirection.RightBetweenDownAndUp ||
-                //        map[h, w + 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
-                //        map[h, w + 2] == (int)CrossingDirection.AllSides)
-                //    {
-                //        if (map[h + 2, w + 2] == (int)AngleDirection.LeftToUp ||
-                //            map[h + 2, w + 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
-                //            map[h + 2, w + 2] == (int)BranchDirection.UpBetweenLeftAndRight ||
-                //            map[h + 2, w + 2] == (int)CrossingDirection.AllSides)
-                //        {
-                //            isRightPillar = false;
-                //        }
-                //    }
-                //    if (map[h, w - 2] == (int)AngleDirection.RightToDown ||
-                //        map[h, w - 2] == (int)BranchDirection.RightBetweenDownAndUp ||
-                //        map[h, w - 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
-                //        map[h, w - 2] == (int)CrossingDirection.AllSides)
-                //    {
-                //        if (map[h + 2, w - 2] == (int)AngleDirection.DownToLeft ||
-                //            map[h + 2, w - 2] == (int)BranchDirection.LeftBetweenUpAndDown ||
-                //            map[h + 2, w - 2] == (int)BranchDirection.DownBetweenRightAndLeft ||
-                //            map[h + 2, w - 2] == (int)CrossingDirection.AllSides)
-                //        {
-                //            isLeftPillar = false;
-                //        }
-                //    }
-                //    if (!isLeftPillar && !isRightPillar)
-                //    {
-                //        mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutBothPillars;
-                //    }
-                //    else
-                //    {
-                //        if (!isLeftPillar)
-                //        {
-                //            mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutDownPillar;
-                //        }
-                //        if (!isRightPillar)
-                //        {
-                //            mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutUpPillar;
-                //        }
-                //    }
-                //}
+                // For crossing
+                bool isLeftUpPillar = true;
+                bool isUpRightPillar = true;
+                bool isRightDownPillar = true;
+                bool isDownLeftPillar = true;
+                int count = 0;
+                if (map[h, w] == (int)CrossingDirection.AllSides)
+                {
+                    if (map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0)
+                    {
+                        isLeftUpPillar = false;
+                        count++;
+                    }
+                    if (map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0)
+                    {
+                        isUpRightPillar = false;
+                        count++;
+                    }
+                    if (map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0)
+                    {
+                        isRightDownPillar = false;
+                        count++;
+                    }
+                    if (map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0)
+                    {
+                        isDownLeftPillar = false;
+                        count++;
+                    }
+                    if (count == 4)
+                    {
+                        mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutFourPillars;
+                    }
+                    if (count == 3)
+                    {
+
+                    }
+                    if (count == 2)
+                    {
+
+                    }
+                    if (count == 1)
+                    {
+
+                    }
+                    if (count == 0)
+                    {
+                        mapAdditional[h, w] = (int)CrossingDirection.AllSides;
+                    }
+                }
             }
         }
 
@@ -755,6 +748,18 @@ public class MapController : MonoBehaviour
                 {
                     Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Up);
                 }
+                if (map[i, j] == (int)BranchDirection.UpBetweenLeftAndRightWithoutLeftPillar)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutLeftPillar, DirectionForInstance.Up);
+                }
+                if (map[i, j] == (int)BranchDirection.UpBetweenLeftAndRightWithoutRightPillar)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutRightPillar, DirectionForInstance.Up);
+                }
+                if (map[i, j] == (int)BranchDirection.UpBetweenLeftAndRightWithoutBothPillars)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutBothPillars, DirectionForInstance.Up);
+                }
                 if (map[i, j] == (int)BranchDirection.RightBetweenDownAndUp)
                 {
                     Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Right);
@@ -775,10 +780,27 @@ public class MapController : MonoBehaviour
                 {
                     Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Down);
                 }
+                if (map[i, j] == (int)BranchDirection.DownBetweenRightAndLeftWithoutRightPillar)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutLeftPillar, DirectionForInstance.Down);
+                }
+                if (map[i, j] == (int)BranchDirection.DownBetweenRightAndLeftWithoutLeftPillar)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutRightPillar, DirectionForInstance.Down);
+                }
+                if (map[i, j] == (int)BranchDirection.DownBetweenRightAndLeftWithoutBothPillars)
+                {
+                    Createanenvironmentinstance(CeilingBranchWithoutBothPillars, DirectionForInstance.Down);
+                }
 
                 if (map[i, j] == (int)CrossingDirection.AllSides)
                 {
                     Createanenvironmentinstance(CeilingCrossing);
+                }
+
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutFourPillars)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutFourPillar);
                 }
             }
         }
