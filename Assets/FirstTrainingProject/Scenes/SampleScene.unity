@@ -417,7 +417,11 @@ MonoBehaviour:
   CeilingBranchWithoutRightPillar: {fileID: 2186472616194231476, guid: a10543f57f90dc2479ce3af83dea57c6, type: 3}
   CeilingBranchWithoutBothPillars: {fileID: 8805073208231068980, guid: 013a3a244b8b10e498d754b5ab4f5120, type: 3}
   CeilingCrossing: {fileID: 3931855815827336201, guid: 119d9535501a7dc40bd1376d6d5169f0, type: 3}
-  CeilingCrossingWithoutFourPillar: {fileID: 1212538509459770793, guid: 460d1bc5557882e49959a4d90fb19600, type: 3}
+  CeilingCrossingWithoutOnePillar: {fileID: 927111822650695172, guid: a2922e9120ed63a4095e1ac8036ed8a1, type: 3}
+  CeilingCrossingWithoutTwoNeighbourPillar: {fileID: 3971871033024478021, guid: e1553dbfcb2b5f64daa87b1a82cb93e7, type: 3}
+  CeilingCrossingWithoutTwoNotNeighbourPillar: {fileID: 5017508057819336783, guid: 02dde28f79bd0da49999f094a6ea597a, type: 3}
+  CeilingCrossingWithoutThreePillar: {fileID: 8554178012629335106, guid: fb2ffccc42cf1f542a56b45d26bee388, type: 3}
+  CeilingCrossingWithoutFourPillars: {fileID: 1212538509459770793, guid: 460d1bc5557882e49959a4d90fb19600, type: 3}
   StartPoint: {fileID: 2041947649811253968, guid: 83b26e8542cc4b44d8679cfccd5c50b7, type: 3}
   EndPoint: {fileID: 2872749501355558295, guid: 49ddafa06d8646949a86f344b1bc22a8, type: 3}
 --- !u!4 &1080821409

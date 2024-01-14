@@ -30,9 +30,16 @@ public class MapController : MonoBehaviour
     private GameObject CeilingBranchWithoutBothPillars;
     [SerializeField]
     private GameObject CeilingCrossing;
-
     [SerializeField]
-    private GameObject CeilingCrossingWithoutFourPillar;
+    private GameObject CeilingCrossingWithoutOnePillar;
+    [SerializeField]
+    private GameObject CeilingCrossingWithoutTwoNeighbourPillar;
+    [SerializeField]
+    private GameObject CeilingCrossingWithoutTwoNotNeighbourPillar;
+    [SerializeField]
+    private GameObject CeilingCrossingWithoutThreePillar;
+    [SerializeField]
+    private GameObject CeilingCrossingWithoutFourPillars;
     //public GameObject DoorLattice;
     [SerializeField]
     private GameObject StartPoint;
@@ -77,8 +84,11 @@ public class MapController : MonoBehaviour
         if (CeilingBranchWithoutRightPillar == null) throw new System.Exception($"CeilingBranchWithoutRightPillar not set!");
         if (CeilingBranchWithoutBothPillars == null) throw new System.Exception($"CeilingBranchWithoutBothPillars not set!");
         if (CeilingCrossing == null) throw new System.Exception($"CeilingCrossing not set!");
-
-        if (CeilingCrossingWithoutFourPillar == null) throw new System.Exception($"CeilingCrossingWithoutFourPillar not set!");
+        if (CeilingCrossingWithoutOnePillar == null) throw new System.Exception($"CeilingCrossingWithoutOnePillar not set!");
+        if (CeilingCrossingWithoutTwoNeighbourPillar == null) throw new System.Exception($"CeilingCrossingWithoutTwoNeighbourPillar not set!");
+        if (CeilingCrossingWithoutTwoNotNeighbourPillar == null) throw new System.Exception($"CeilingCrossingWithoutTwoNotNeighbourPillar not set!");
+        if (CeilingCrossingWithoutThreePillar == null) throw new System.Exception($"CeilingCrossingWithoutThreePillar not set!");
+        if (CeilingCrossingWithoutFourPillars == null) throw new System.Exception($"CeilingCrossingWithoutFourPillars not set!");
         if (StartPoint == null) throw new System.Exception($"StartPoint not set!");
         if (EndPoint == null) throw new System.Exception($"EndPoint not set!");
 
@@ -544,11 +554,11 @@ public class MapController : MonoBehaviour
                     {
                         if (!isLeftPillar)
                         {
-                            mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutUpPillar;
+                            mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutDownPillar;
                         }
                         if (!isRightPillar)
                         {
-                            mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutDownPillar;
+                            mapAdditional[h, w] = (int)BranchDirection.RightBetweenDownAndUpWithoutUpPillar;
                         }
                     }
                 }
@@ -613,15 +623,69 @@ public class MapController : MonoBehaviour
                     }
                     if (count == 3)
                     {
-
+                        if (!isDownLeftPillar && !isLeftUpPillar && !isUpRightPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutThreePillarsLeft;
+                        }
+                        if (!isLeftUpPillar && !isUpRightPillar && !isRightDownPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutThreePillarsUp;
+                        }
+                        if (!isUpRightPillar && !isRightDownPillar && !isDownLeftPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutThreePillarsRight;
+                        }
+                        if (!isRightDownPillar && !isDownLeftPillar && !isLeftUpPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutThreePillarsDown;
+                        }
                     }
                     if (count == 2)
                     {
+                        if (!isLeftUpPillar && !isUpRightPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursUp;
+                        }
+                        if (!isUpRightPillar && !isRightDownPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursRight;
+                        }
+                        if (!isRightDownPillar && !isDownLeftPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursDown;
+                        }
+                        if (!isDownLeftPillar && !isLeftUpPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursLeft;
+                        }
 
+                        if (!isLeftUpPillar && !isRightDownPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutTwoPillarsNotNeighboursLeftUp;
+                        }
+                        if (!isUpRightPillar && !isDownLeftPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutTwoPillarsNotNeighboursUpRight;
+                        }
                     }
                     if (count == 1)
                     {
-
+                        if (!isLeftUpPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutOnePillarLeftUp;
+                        }
+                        if (!isUpRightPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutOnePillarUpRight;
+                        }
+                        if (!isRightDownPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutOnePillarRightDown;
+                        }
+                        if (!isDownLeftPillar)
+                        {
+                            mapAdditional[h, w] = (int)CrossingDirection.AllSidesWithoutOnePillarDownLeft;
+                        }
                     }
                     if (count == 0)
                     {
@@ -641,6 +705,15 @@ public class MapController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool AAA(int[,] map, DirectionForRemovePillars direction)
+    {
+        //map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0 //Left Up (Left -1) 
+        //map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0 //Up Right
+        //map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0 //Right Down
+        //map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0 //Down Left (Left -1) 
+        return false;
     }
 
     private void Drawing_Map(int[,] map)
@@ -797,10 +870,77 @@ public class MapController : MonoBehaviour
                 {
                     Createanenvironmentinstance(CeilingCrossing);
                 }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutOnePillarLeftUp)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutOnePillar, DirectionForInstance.Left);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutOnePillarUpRight)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutOnePillar, DirectionForInstance.Up);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutOnePillarRightDown)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutOnePillar, DirectionForInstance.Right);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutOnePillarDownLeft)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutOnePillar, DirectionForInstance.Down);
+                }
+
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursLeft)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNeighbourPillar, DirectionForInstance.Left);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursUp)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNeighbourPillar, DirectionForInstance.Up);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursRight)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNeighbourPillar, DirectionForInstance.Right);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursDown)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNeighbourPillar, DirectionForInstance.Down);
+                }
+
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNotNeighboursLeftUp)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNotNeighbourPillar, DirectionForInstance.Left);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNotNeighboursUpRight)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNotNeighbourPillar, DirectionForInstance.Up);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNotNeighboursRightDown)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNotNeighbourPillar, DirectionForInstance.Right);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNotNeighboursDownLeft)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNotNeighbourPillar, DirectionForInstance.Down);
+                }
+
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutThreePillarsLeft)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutThreePillar, DirectionForInstance.Left);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutThreePillarsUp)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutThreePillar, DirectionForInstance.Up);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutThreePillarsRight)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutThreePillar, DirectionForInstance.Right);
+                }
+                if (map[i, j] == (int)CrossingDirection.AllSidesWithoutThreePillarsDown)
+                {
+                    Createanenvironmentinstance(CeilingCrossingWithoutThreePillar, DirectionForInstance.Down);
+                }
 
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutFourPillars)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutFourPillar);
+                    Createanenvironmentinstance(CeilingCrossingWithoutFourPillars);
                 }
             }
         }

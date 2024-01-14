@@ -15,6 +15,14 @@ public enum DirectionForInstance // Rotation amount
     Down = 270 // Three quarters PI
 }
 
+public enum DirectionForRemovePillars // Удаление столбов на карте
+{
+    LeftUp,
+    UpRight,
+    RightDown,
+    DownLeft
+}
+
 /// <summary>
 /// Direction for a dead-end cell
 /// </summary>
@@ -145,10 +153,10 @@ public enum CrossingDirection
 
     AllSidesWithoutTwoPillarsNotNeighbours = 4122,
 
-    AllSidesWithoutTwoPillarsNotNeighboursLeft = 41221,
-    AllSidesWithoutTwoPillarsNotNeighboursUp = 41222,
-    AllSidesWithoutTwoPillarsNotNeighboursRight = 41223,
-    AllSidesWithoutTwoPillarsNotNeighboursDown = 41224,
+    AllSidesWithoutTwoPillarsNotNeighboursLeftUp = 41221,
+    AllSidesWithoutTwoPillarsNotNeighboursUpRight = 41222,
+    AllSidesWithoutTwoPillarsNotNeighboursRightDown = 41223,
+    AllSidesWithoutTwoPillarsNotNeighboursDownLeft = 41224,
 
     AllSidesWithoutThreePillars = 413,
 
