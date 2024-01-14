@@ -105,7 +105,7 @@ public class MapController : MonoBehaviour
         //{
         //    Map_Load();
         //}
-        Debug.Log(map_main.Length);
+        //Debug.Log(map_main.Length);
         Drawing_Map(map_main);
     }
 
@@ -723,11 +723,14 @@ public class MapController : MonoBehaviour
         {
             for (int j = 1; j <= map.GetUpperBound(1); j += 2)
             {
-                Debug.Log($"Draw {map[i, j]} ({i}, {j})");
+                //Debug.Log($"Draw {map[i, j]} ({i}, {j})");
                 coordinates = new Vector3(j * 1f, 2f, (map.GetUpperBound(0) - i) * 1f);
-                if (map[i, j] == 5)
+                if (map[i, j] == 5) // Start point
                 {
                     Createanenvironmentinstance(StartPoint, DirectionForInstance.Up);
+
+                    coordinates += new Vector3(0F, 0.5F, 0F);
+                    GameController.SetNewSpawnPlaceInLevel(coordinates);
                 }
                 if (map[i, j] == 6)
                 {

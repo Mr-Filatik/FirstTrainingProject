@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        transform.position = new Vector3(1, 3, 1);
+        //transform.position = new Vector3(1, 3, 1);
     }
 
     // Update is called once per frame
