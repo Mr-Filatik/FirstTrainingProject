@@ -2,18 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "My Data", menuName = "ScriptableObjects/ApplicationManager", order = 1)]
+[CreateAssetMenu(fileName = "ApplicationManager", menuName = "ScriptableObjects/ApplicationManager", order = 1)]
 public class ApplicationManager : ScriptableObject
 {
     #region Serialize Fields
 
-    //[SerializeField]
     private MapController _mapController;
 
-    //[SerializeField]
     private PlayerController _playerController;
 
-    //[SerializeField]
     private GameController _gameController;
 
     #endregion

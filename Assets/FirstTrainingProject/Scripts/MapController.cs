@@ -13,42 +13,41 @@ public class MapController : MonoBehaviour
     public GameObject Parent;
 
     [Header("Enviroment prefabs")]
-    //public GameObject WallBlank;
-    //public GameObject FloorBlank;
+
     [SerializeField]
-    private GameObject CeilingStraight;
-    [SerializeField]
-    private GameObject CeilingBlindAlley;
-    [SerializeField]
-    private GameObject CeilingAngle;
-    [SerializeField]
-    private GameObject CeilingAngleWithoutPillar;
-    [SerializeField]
-    private GameObject CeilingBranch;
-    [SerializeField]
-    private GameObject CeilingBranchWithoutLeftPillar;
-    [SerializeField]
-    private GameObject CeilingBranchWithoutRightPillar;
-    [SerializeField]
-    private GameObject CeilingBranchWithoutBothPillars;
-    [SerializeField]
-    private GameObject CeilingCrossing;
-    [SerializeField]
-    private GameObject CeilingCrossingWithoutOnePillar;
-    [SerializeField]
-    private GameObject CeilingCrossingWithoutTwoNeighbourPillar;
-    [SerializeField]
-    private GameObject CeilingCrossingWithoutTwoNotNeighbourPillar;
-    [SerializeField]
-    private GameObject CeilingCrossingWithoutThreePillar;
-    [SerializeField]
-    private GameObject CeilingCrossingWithoutFourPillars;
-    //public GameObject DoorLattice;
-    [SerializeField]
-    private GameObject StartPoint;
-    [SerializeField]
-    private GameObject EndPoint;
-    //public GameObject Room;
+    private EnviromentPrefabsData _enviromentPrefabsData;
+    ////public GameObject WallBlank;
+    ////public GameObject FloorBlank;
+    //[SerializeField]
+    //private GameObject CeilingStraight;
+    //[SerializeField]
+    //private GameObject CeilingBlindAlley;
+    //[SerializeField]
+    //private GameObject CeilingAngle;
+    //[SerializeField]
+    //private GameObject CeilingAngleWithoutPillar;
+    //[SerializeField]
+    //private GameObject CeilingBranch;
+    //[SerializeField]
+    //private GameObject CeilingBranchWithoutLeftPillar;
+    //[SerializeField]
+    //private GameObject CeilingBranchWithoutRightPillar;
+    //[SerializeField]
+    //private GameObject CeilingBranchWithoutBothPillars;
+    //[SerializeField]
+    //private GameObject CeilingCrossing;
+    //[SerializeField]
+    //private GameObject CeilingCrossingWithoutOnePillar;
+    //[SerializeField]
+    //private GameObject CeilingCrossingWithoutTwoNeighbourPillar;
+    //[SerializeField]
+    //private GameObject CeilingCrossingWithoutTwoNotNeighbourPillar;
+    //[SerializeField]
+    //private GameObject CeilingCrossingWithoutThreePillar;
+    //[SerializeField]
+    //private GameObject CeilingCrossingWithoutFourPillars;
+    ////public GameObject DoorLattice;
+    ////public GameObject Room;
 
     #endregion
 
@@ -78,22 +77,22 @@ public class MapController : MonoBehaviour
     {
         //if (WallBlank == null) throw new System.Exception($"WallBlank not set!");
         //if (FloorBlank == null) throw new System.Exception($"FloorBlank not set!");
-        if (CeilingStraight == null) throw new System.Exception($"CeilingStraight not set!");
-        if (CeilingBlindAlley == null) throw new System.Exception($"CeilingBlindAlley not set!");
-        if (CeilingAngle == null) throw new System.Exception($"CeilingAngle not set!");
-        if (CeilingAngleWithoutPillar == null) throw new System.Exception($"CeilingAngleWithoutPillar not set!");
-        if (CeilingBranch == null) throw new System.Exception($"CeilingBranch not set!");
-        if (CeilingBranchWithoutLeftPillar == null) throw new System.Exception($"CeilingBranchWithoutLeftPillar not set!");
-        if (CeilingBranchWithoutRightPillar == null) throw new System.Exception($"CeilingBranchWithoutRightPillar not set!");
-        if (CeilingBranchWithoutBothPillars == null) throw new System.Exception($"CeilingBranchWithoutBothPillars not set!");
-        if (CeilingCrossing == null) throw new System.Exception($"CeilingCrossing not set!");
-        if (CeilingCrossingWithoutOnePillar == null) throw new System.Exception($"CeilingCrossingWithoutOnePillar not set!");
-        if (CeilingCrossingWithoutTwoNeighbourPillar == null) throw new System.Exception($"CeilingCrossingWithoutTwoNeighbourPillar not set!");
-        if (CeilingCrossingWithoutTwoNotNeighbourPillar == null) throw new System.Exception($"CeilingCrossingWithoutTwoNotNeighbourPillar not set!");
-        if (CeilingCrossingWithoutThreePillar == null) throw new System.Exception($"CeilingCrossingWithoutThreePillar not set!");
-        if (CeilingCrossingWithoutFourPillars == null) throw new System.Exception($"CeilingCrossingWithoutFourPillars not set!");
-        if (StartPoint == null) throw new System.Exception($"StartPoint not set!");
-        if (EndPoint == null) throw new System.Exception($"EndPoint not set!");
+        //if (CeilingStraight == null) throw new System.Exception($"CeilingStraight not set!");
+        //if (CeilingBlindAlley == null) throw new System.Exception($"CeilingBlindAlley not set!");
+        //if (CeilingAngle == null) throw new System.Exception($"CeilingAngle not set!");
+        //if (CeilingAngleWithoutPillar == null) throw new System.Exception($"CeilingAngleWithoutPillar not set!");
+        //if (CeilingBranch == null) throw new System.Exception($"CeilingBranch not set!");
+        //if (CeilingBranchWithoutLeftPillar == null) throw new System.Exception($"CeilingBranchWithoutLeftPillar not set!");
+        //if (CeilingBranchWithoutRightPillar == null) throw new System.Exception($"CeilingBranchWithoutRightPillar not set!");
+        //if (CeilingBranchWithoutBothPillars == null) throw new System.Exception($"CeilingBranchWithoutBothPillars not set!");
+        //if (CeilingCrossing == null) throw new System.Exception($"CeilingCrossing not set!");
+        //if (CeilingCrossingWithoutOnePillar == null) throw new System.Exception($"CeilingCrossingWithoutOnePillar not set!");
+        //if (CeilingCrossingWithoutTwoNeighbourPillar == null) throw new System.Exception($"CeilingCrossingWithoutTwoNeighbourPillar not set!");
+        //if (CeilingCrossingWithoutTwoNotNeighbourPillar == null) throw new System.Exception($"CeilingCrossingWithoutTwoNotNeighbourPillar not set!");
+        //if (CeilingCrossingWithoutThreePillar == null) throw new System.Exception($"CeilingCrossingWithoutThreePillar not set!");
+        //if (CeilingCrossingWithoutFourPillars == null) throw new System.Exception($"CeilingCrossingWithoutFourPillars not set!");
+        //if (StartPoint == null) throw new System.Exception($"StartPoint not set!");
+        //if (EndPoint == null) throw new System.Exception($"EndPoint not set!");
 
         _applicationManager.MapController = this;
 
@@ -736,10 +735,12 @@ public class MapController : MonoBehaviour
             for (int j = 1; j <= map.GetUpperBound(1); j += 2)
             {
                 //Debug.Log($"Draw {map[i, j]} ({i}, {j})");
-                coordinates = new Vector3(j * 1f, 2f, (map.GetUpperBound(0) - i) * 1f);
-                if (map[i, j] == 5) // Start point
+
+                float size = _enviromentPrefabsData.CellSize / 2;
+                coordinates = new Vector3(j * size, 2f, (map.GetUpperBound(0) - i) * size);
+                if (map[i, j] == 5)
                 {
-                    Createanenvironmentinstance(StartPoint, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.StartCell, DirectionForInstance.Up);
 
                     coordinates += new Vector3(0F, 0.5F, 0F);
                     var am = _applicationManager.GameController;
@@ -752,7 +753,7 @@ public class MapController : MonoBehaviour
                 }
                 if (map[i, j] == 6)
                 {
-                    Createanenvironmentinstance(EndPoint, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.EndCell, DirectionForInstance.Down);
                 }
                 //if (map[i, j] == 7)
                 //{
@@ -762,206 +763,206 @@ public class MapController : MonoBehaviour
                 //}
                 if (map[i, j] == (int)BlindAlleyDirection.Left)
                 {
-                    Createanenvironmentinstance(CeilingBlindAlley, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.DeadEndCell, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)BlindAlleyDirection.Up)
                 {
-                    Createanenvironmentinstance(CeilingBlindAlley, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.DeadEndCell, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)BlindAlleyDirection.Right)
                 {
-                    Createanenvironmentinstance(CeilingBlindAlley, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.DeadEndCell, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)BlindAlleyDirection.Down)
                 {
-                    Createanenvironmentinstance(CeilingBlindAlley, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.DeadEndCell, DirectionForInstance.Down);
                 }
 
                 // CeilingStraight
                 if (map[i, j] == (int)StraightDirection.LeftToRight)
                 {
-                    Createanenvironmentinstance(CeilingStraight, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.StraightCell, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)StraightDirection.UpToDown)
                 {
-                    Createanenvironmentinstance(CeilingStraight, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.StraightCell, DirectionForInstance.Up);
                 }
 
                 // CeilingAngle
                 if (map[i, j] == (int)AngleDirection.LeftToUp)
                 {
-                    Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CornerCell, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)AngleDirection.LeftToUpWithoutPillar)
                 {
-                    Createanenvironmentinstance(CeilingAngleWithoutPillar, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CornerCellWithoutPillar, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)AngleDirection.UpToRight)
                 {
-                    Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CornerCell, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)AngleDirection.UpToRightWithoutPillar)
                 {
-                    Createanenvironmentinstance(CeilingAngleWithoutPillar, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CornerCellWithoutPillar, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)AngleDirection.RightToDown)
                 {
-                    Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CornerCell, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)AngleDirection.RightToDownWithoutPillar)
                 {
-                    Createanenvironmentinstance(CeilingAngleWithoutPillar, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CornerCellWithoutPillar, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)AngleDirection.DownToLeft)
                 {
-                    Createanenvironmentinstance(CeilingAngle, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CornerCell, DirectionForInstance.Down);
                 }
                 if (map[i, j] == (int)AngleDirection.DownToLeftWithoutPillar)
                 {
-                    Createanenvironmentinstance(CeilingAngleWithoutPillar, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CornerCellWithoutPillar, DirectionForInstance.Down);
                 }
 
                 // CeilingBranch
                 if (map[i, j] == (int)BranchDirection.LeftBetweenUpAndDown)
                 {
-                    Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCell, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)BranchDirection.LeftBetweenUpAndDownWithoutDownPillar)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutLeftPillar, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutLeftPillar, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)BranchDirection.LeftBetweenUpAndDownWithoutUpPillar)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutRightPillar, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutRightPillar, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)BranchDirection.LeftBetweenUpAndDownWithoutBothPillars)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutBothPillars, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutBothPillars, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)BranchDirection.UpBetweenLeftAndRight)
                 {
-                    Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCell, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)BranchDirection.UpBetweenLeftAndRightWithoutLeftPillar)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutLeftPillar, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutLeftPillar, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)BranchDirection.UpBetweenLeftAndRightWithoutRightPillar)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutRightPillar, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutRightPillar, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)BranchDirection.UpBetweenLeftAndRightWithoutBothPillars)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutBothPillars, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutBothPillars, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)BranchDirection.RightBetweenDownAndUp)
                 {
-                    Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCell, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)BranchDirection.RightBetweenDownAndUpWithoutDownPillar)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutLeftPillar, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutLeftPillar, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)BranchDirection.RightBetweenDownAndUpWithoutUpPillar)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutRightPillar, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutRightPillar, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)BranchDirection.RightBetweenDownAndUpWithoutBothPillars)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutBothPillars, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutBothPillars, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)BranchDirection.DownBetweenRightAndLeft)
                 {
-                    Createanenvironmentinstance(CeilingBranch, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCell, DirectionForInstance.Down);
                 }
                 if (map[i, j] == (int)BranchDirection.DownBetweenRightAndLeftWithoutRightPillar)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutLeftPillar, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutLeftPillar, DirectionForInstance.Down);
                 }
                 if (map[i, j] == (int)BranchDirection.DownBetweenRightAndLeftWithoutLeftPillar)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutRightPillar, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutRightPillar, DirectionForInstance.Down);
                 }
                 if (map[i, j] == (int)BranchDirection.DownBetweenRightAndLeftWithoutBothPillars)
                 {
-                    Createanenvironmentinstance(CeilingBranchWithoutBothPillars, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.BranchCellWithoutBothPillars, DirectionForInstance.Down);
                 }
 
                 if (map[i, j] == (int)CrossingDirection.AllSides)
                 {
-                    Createanenvironmentinstance(CeilingCrossing);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCell);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutOnePillarLeftUp)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutOnePillar, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutOnePillar, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutOnePillarUpRight)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutOnePillar, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutOnePillar, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutOnePillarRightDown)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutOnePillar, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutOnePillar, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutOnePillarDownLeft)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutOnePillar, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutOnePillar, DirectionForInstance.Down);
                 }
 
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursLeft)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNeighbourPillar, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutTwoNeighbourPillars, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursUp)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNeighbourPillar, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutTwoNeighbourPillars, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursRight)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNeighbourPillar, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutTwoNeighbourPillars, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNeighboursDown)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNeighbourPillar, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutTwoNeighbourPillars, DirectionForInstance.Down);
                 }
 
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNotNeighboursLeftUp)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNotNeighbourPillar, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutTwoNotNeighbourPillars, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNotNeighboursUpRight)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNotNeighbourPillar, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutTwoNotNeighbourPillars, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNotNeighboursRightDown)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNotNeighbourPillar, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutTwoNotNeighbourPillars, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutTwoPillarsNotNeighboursDownLeft)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutTwoNotNeighbourPillar, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutTwoNotNeighbourPillars, DirectionForInstance.Down);
                 }
 
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutThreePillarsLeft)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutThreePillar, DirectionForInstance.Left);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutThreePillars, DirectionForInstance.Left);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutThreePillarsUp)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutThreePillar, DirectionForInstance.Up);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutThreePillars, DirectionForInstance.Up);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutThreePillarsRight)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutThreePillar, DirectionForInstance.Right);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutThreePillars, DirectionForInstance.Right);
                 }
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutThreePillarsDown)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutThreePillar, DirectionForInstance.Down);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutThreePillars, DirectionForInstance.Down);
                 }
 
                 if (map[i, j] == (int)CrossingDirection.AllSidesWithoutFourPillars)
                 {
-                    Createanenvironmentinstance(CeilingCrossingWithoutFourPillars);
+                    Createanenvironmentinstance(_enviromentPrefabsData.CrossCellWithoutFourPillars);
                 }
             }
         }
