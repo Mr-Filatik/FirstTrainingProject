@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class EndPointController : MonoBehaviour
 {
+    [SerializeField]
+    private ApplicationManager _applicationManager;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other != null && other.tag == "Player")
         {
-            GameController.EndGame();
+            var gc = _applicationManager.GameController;
+            if (gc != null)
+            {
+                gc.EndGame();
+            }
         }
     }
 }

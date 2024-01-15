@@ -6,6 +6,9 @@ public class MapController : MonoBehaviour
 {
     #region Public Fields
 
+    [SerializeField]
+    private ApplicationManager _applicationManager;
+
     [Header("Enviroment parent")]
     public GameObject Parent;
 
@@ -92,12 +95,14 @@ public class MapController : MonoBehaviour
         if (StartPoint == null) throw new System.Exception($"StartPoint not set!");
         if (EndPoint == null) throw new System.Exception($"EndPoint not set!");
 
+        _applicationManager.MapController = this;
+
         height = 15;//PlayerPrefs.GetInt("Size_h"); //only !/2 (3, 5, 7)
         width = 21;//PlayerPrefs.GetInt("Size_w"); //only !/2 (3, 5, 7)
         map_main = new int[height, width];
         //if (PlayerPrefs.GetString("Map") == "")
         //{
-        CreatingMap();
+        //CreatingMap();
         //Map_Saver();
         //GameObject.Find("Enemy").GetComponent<NewBehaviourScript>().Map_Load();
         //}
@@ -106,11 +111,12 @@ public class MapController : MonoBehaviour
         //    Map_Load();
         //}
         //Debug.Log(map_main.Length);
-        Drawing_Map(map_main);
+        //Drawing_Map(map_main);
     }
 
     void Start()
     {
+        MyStart();
         /*height = PlayerPrefs.GetInt("Size_h");
         width = PlayerPrefs.GetInt("Size_w");
         map_main = new int[height, width];
@@ -130,6 +136,12 @@ public class MapController : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public void MyStart()
+    {
+        CreatingMap();
+        Drawing_Map(map_main);
     }
 
     private void CreatingMap()
@@ -730,7 +742,13 @@ public class MapController : MonoBehaviour
                     Createanenvironmentinstance(StartPoint, DirectionForInstance.Up);
 
                     coordinates += new Vector3(0F, 0.5F, 0F);
-                    GameController.SetNewSpawnPlaceInLevel(coordinates);
+                    var am = _applicationManager.GameController;
+                    am.SetNewSpawnPlaceInLevel(coordinates);
+                    //if (am != null)
+                    //{
+                    //    Debug.Log("!= null");
+                    //    am.SetNewSpawnPlaceInLevel(coordinates);
+                    //}
                 }
                 if (map[i, j] == 6)
                 {

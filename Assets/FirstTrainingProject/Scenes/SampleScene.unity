@@ -987,6 +987,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e50ebb5ed721ba458b6973c0a3539b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _applicationManager: {fileID: 11400000, guid: e91eb72b35418ce4db8a64a1093a59d8, type: 2}
   Parent: {fileID: 1258862579}
   CeilingStraight: {fileID: 8914994773114636678, guid: d80180791795b3f4b98ec1f606ceadfe, type: 3}
   CeilingBlindAlley: {fileID: 2985179928556885707, guid: b4be8e478acbc4d41801994eb504cd9d, type: 3}
@@ -1770,6 +1771,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementSpeed: 2
   _rotateSpeed: 100
+  _applicationManager: {fileID: 11400000, guid: e91eb72b35418ce4db8a64a1093a59d8, type: 2}
 --- !u!4 &1788399022
 Transform:
   m_ObjectHideFlags: 0
@@ -2312,8 +2314,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45ade27a842433243a4949d6faa74b40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerController: {fileID: 1788399021}
+  _applicationManager: {fileID: 11400000, guid: e91eb72b35418ce4db8a64a1093a59d8, type: 2}
   _spawnPlaceMenu: {fileID: 2024136404}
+  _screen: {fileID: 984527272}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
