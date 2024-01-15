@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,9 @@ public class GameController : MonoBehaviour
     private bool _isMenu = false;
     private static Vector3 _spawnPositionInLevel;
     private static Vector3 _spawnRotateInLevel;
+    private DateTime? _startTime = null;
+
+    private static GameController _instance;
 
     public static void SetNewSpawnPlaceInLevel(Vector3 spawnPositionInLevel)
     {
@@ -20,10 +24,23 @@ public class GameController : MonoBehaviour
         _spawnRotateInLevel = Vector3.up * 90;
     }
 
+    public static void EndGame()
+    {
+        _spawnPositionInLevel = _instance._playerController.gameObject.transform.position;
+        _spawnRotateInLevel = _instance._playerController.gameObject.transform.eulerAngles;
+
+        _instance._playerController.gameObject.transform.position = _instance._spawnPlaceMenu.transform.position;
+        _instance._playerController.gameObject.transform.eulerAngles = Vector3.zero;
+
+        _instance._isMenu = true;
+    }
+
     private void Awake()
     {
         if (_playerController == null) throw new System.Exception($"PlayerController not set!");
         if (_spawnPlaceMenu == null) throw new System.Exception($"SpawnPlaceMenu not set!");
+
+        _instance = this;
     }
 
     void Start()
