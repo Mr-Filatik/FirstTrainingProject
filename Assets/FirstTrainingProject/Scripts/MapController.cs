@@ -140,7 +140,7 @@ public class MapController : MonoBehaviour
     public void MyStart()
     {
         CreatingMap();
-        Drawing_Map(map_main);
+        DrawMap(map_main);
     }
 
     private void CreatingMap()
@@ -463,33 +463,21 @@ public class MapController : MonoBehaviour
             for (int w = 1; w < map.GetUpperBound(1); w += 2)
             {
                 // For angle
-                if (map[h, w] == (int)AngleDirection.LeftToUp)
+                if (map[h, w] == (int)AngleDirection.LeftToUp && ChechFreePlace(map, h, w, DirectionForRemovePillars.LeftUp))
                 {
-                    if (map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0)
-                    {
-                        mapAdditional[h, w] = (int)AngleDirection.LeftToUpWithoutPillar;
-                    }
+                    mapAdditional[h, w] = (int)AngleDirection.LeftToUpWithoutPillar;
                 }
-                if (map[h, w] == (int)AngleDirection.UpToRight)
+                if (map[h, w] == (int)AngleDirection.UpToRight && ChechFreePlace(map, h, w, DirectionForRemovePillars.UpRight))
                 {
-                    if (map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0)
-                    {
-                        mapAdditional[h, w] = (int)AngleDirection.UpToRightWithoutPillar;
-                    }
+                    mapAdditional[h, w] = (int)AngleDirection.UpToRightWithoutPillar;
                 }
-                if (map[h, w] == (int)AngleDirection.RightToDown)
+                if (map[h, w] == (int)AngleDirection.RightToDown && ChechFreePlace(map, h, w, DirectionForRemovePillars.RightDown))
                 {
-                    if (map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0)
-                    {
-                        mapAdditional[h, w] = (int)AngleDirection.RightToDownWithoutPillar;
-                    }
+                    mapAdditional[h, w] = (int)AngleDirection.RightToDownWithoutPillar;
                 }
-                if (map[h, w] == (int)AngleDirection.DownToLeft)
+                if (map[h, w] == (int)AngleDirection.DownToLeft && ChechFreePlace(map, h, w, DirectionForRemovePillars.DownLeft))
                 {
-                    if (map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0)
-                    {
-                        mapAdditional[h, w] = (int)AngleDirection.DownToLeftWithoutPillar;
-                    }
+                    mapAdditional[h, w] = (int)AngleDirection.DownToLeftWithoutPillar;
                 }
 
                 // For branch
@@ -497,11 +485,11 @@ public class MapController : MonoBehaviour
                 bool isRightPillar = true;
                 if (map[h, w] == (int)BranchDirection.LeftBetweenUpAndDown)
                 {
-                    if (map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.LeftUp))
                     {
                         isRightPillar = false;
                     }
-                    if (map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.DownLeft))
                     {
                         isLeftPillar = false;
                     }
@@ -523,11 +511,11 @@ public class MapController : MonoBehaviour
                 }
                 if (map[h, w] == (int)BranchDirection.UpBetweenLeftAndRight)
                 {
-                    if (map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.UpRight))
                     {
                         isRightPillar = false;
                     }
-                    if (map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.LeftUp))
                     {
                         isLeftPillar = false;
                     }
@@ -549,11 +537,11 @@ public class MapController : MonoBehaviour
                 }
                 if (map[h, w] == (int)BranchDirection.RightBetweenDownAndUp)
                 {
-                    if (map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.RightDown))
                     {
                         isRightPillar = false;
                     }
-                    if (map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.UpRight))
                     {
                         isLeftPillar = false;
                     }
@@ -575,11 +563,11 @@ public class MapController : MonoBehaviour
                 }
                 if (map[h, w] == (int)BranchDirection.DownBetweenRightAndLeft)
                 {
-                    if (map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.DownLeft))
                     {
                         isRightPillar = false;
                     }
-                    if (map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.RightDown))
                     {
                         isLeftPillar = false;
                     }
@@ -608,22 +596,22 @@ public class MapController : MonoBehaviour
                 int count = 0;
                 if (map[h, w] == (int)CrossingDirection.AllSides)
                 {
-                    if (map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.LeftUp))
                     {
                         isLeftUpPillar = false;
                         count++;
                     }
-                    if (map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.UpRight))
                     {
                         isUpRightPillar = false;
                         count++;
                     }
-                    if (map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.RightDown))
                     {
                         isRightDownPillar = false;
                         count++;
                     }
-                    if (map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0)
+                    if (ChechFreePlace(map, h, w, DirectionForRemovePillars.DownLeft))
                     {
                         isDownLeftPillar = false;
                         count++;
@@ -718,18 +706,30 @@ public class MapController : MonoBehaviour
         }
     }
 
-    private bool AAA(int[,] map, DirectionForRemovePillars direction)
+    /// <summary>
+    /// Checking that there are no walls between two cells
+    /// </summary>
+    /// <param name="map"> Map (array of integers) </param>
+    /// <param name="h"> Height index </param>
+    /// <param name="w"> Width index </param>
+    /// <param name="direction"> Direction of inspection </param>
+    /// <returns> <see langword="true"/> - if there are no walls, <see langword="false"/> - if there are walls </returns>
+    /// <remarks> Проверка, что между двумя клетками нет стен </remarks>
+    private bool ChechFreePlace(int[,] map, int h, int w, DirectionForRemovePillars direction)
     {
-        //map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0 //Left Up (Left -1) 
-        //map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0 //Up Right
-        //map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0 //Right Down
-        //map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0 //Down Left (Left -1) 
-        return false;
+        return direction switch
+        {
+            DirectionForRemovePillars.LeftUp => map[h, w + 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w + 2] != 0 && map[h - 2, w + 1] != 0,//Left Up (Left h - 1) (Up w + 1)
+            DirectionForRemovePillars.UpRight => map[h, w + 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w + 2] != 0 && map[h + 2, w + 1] != 0,//Up Right (Up w + 1) (Right h + 1)
+            DirectionForRemovePillars.RightDown => map[h, w - 1] != 0 && map[h + 1, w] != 0 && map[h + 1, w - 2] != 0 && map[h + 2, w - 1] != 0,//Right Down (Right h + 1) (Down w - 1)
+            DirectionForRemovePillars.DownLeft => map[h, w - 1] != 0 && map[h - 1, w] != 0 && map[h - 1, w - 2] != 0 && map[h - 2, w - 1] != 0,//Down Left (Down w - 1) (Left h - 1)
+            _ => false,
+        };
     }
 
-    private void Drawing_Map(int[,] map)
+    private void DrawMap(int[,] map)
     {
-        Removal_Of_Invironment();
+        ClearInvironments();
         for (int i = 1; i <= map.GetUpperBound(0); i += 2)
         {
             for (int j = 1; j <= map.GetUpperBound(1); j += 2)
@@ -1042,7 +1042,7 @@ public class MapController : MonoBehaviour
         object_being_created.transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + (float)direction, transform.eulerAngles.z);
     }
 
-    private void Removal_Of_Invironment()
+    private void ClearInvironments()
     {
         for (int i = Parent.transform.childCount - 1; i >= 0; i--)
         {

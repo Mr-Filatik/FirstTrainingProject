@@ -4,15 +4,6 @@ using UnityEngine;
 
 public class Other : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // Make the floor generation one plane according to the size of the field
+    // Генерацию пола сделать одной плоскостью по размеру поля
 }

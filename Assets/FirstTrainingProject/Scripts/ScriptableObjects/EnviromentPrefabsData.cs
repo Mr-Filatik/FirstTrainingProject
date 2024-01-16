@@ -13,6 +13,8 @@ public class EnviromentPrefabsData : ScriptableObject
 
     [Header("Enviroment prefabs")]
 
+    [Header("Cell prefabs")]
+
     [SerializeField]
     private GameObject _startCell;
     [SerializeField]
@@ -54,7 +56,7 @@ public class EnviromentPrefabsData : ScriptableObject
     /// Cell size
     /// </summary>
     /// <remarks> Размер ячейки </remarks>
-    public float CellSize => _cellSize; // Consider adding 2 dimensions, along two axes, for rectangular cells
+    public float CellSize => _cellSize;
 
     /// <summary>
     /// Start cell
@@ -125,31 +127,31 @@ public class EnviromentPrefabsData : ScriptableObject
     /// <summary>
     /// Cross cell without one pillars
     /// </summary>
-    /// <remarks> Перекрёстная ячейка </remarks>
+    /// <remarks> Перекрёстная ячейка без одной опоры </remarks>
     public GameObject CrossCellWithoutOnePillar => _crossCellWithoutOnePillar;
 
     /// <summary>
     /// Cross cell without two neighbour pillars
     /// </summary>
-    /// <remarks> Перекрёстная ячейка </remarks>
+    /// <remarks> Перекрёстная ячейка двух соседних опор </remarks>
     public GameObject CrossCellWithoutTwoNeighbourPillars => _crossCellWithoutTwoNeighbourPillars;
 
     /// <summary>
     /// Cross cell without two not neighbour pillars
     /// </summary>
-    /// <remarks> Перекрёстная ячейка </remarks>
+    /// <remarks> Перекрёстная ячейка без двух противоположных опор </remarks>
     public GameObject CrossCellWithoutTwoNotNeighbourPillars => _crossCellWithoutTwoNotNeighbourPillars;
 
     /// <summary>
     /// Cross cell without three pillars
     /// </summary>
-    /// <remarks> Перекрёстная ячейка </remarks>
+    /// <remarks> Перекрёстная ячейка без трёх опор </remarks>
     public GameObject CrossCellWithoutThreePillars => _crossCellWithoutThreePillars;
 
     /// <summary>
     /// Cross cell without four pillars
     /// </summary>
-    /// <remarks> Перекрёстная ячейка </remarks>
+    /// <remarks> Перекрёстная ячейка без четырёх опор </remarks>
     public GameObject CrossCellWithoutFourPillars => _crossCellWithoutFourPillars;
 
     #endregion
