@@ -2,19 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EndPointController : MonoBehaviour
+namespace FirstTrainingProject
 {
-    [SerializeField]
-    private ApplicationManager _applicationManager;
-
-    private void OnTriggerEnter(Collider other)
+    public class EndPointController : MonoBehaviour
     {
-        if (other != null && other.tag == "Player")
+        [SerializeField]
+        private ApplicationManager _applicationManager;
+
+        private void OnTriggerEnter(Collider other)
         {
-            var gc = _applicationManager.GameController;
-            if (gc != null)
+            if (other != null && other.tag == "Player")
             {
-                gc.EndGame();
+                var gc = _applicationManager.GameController;
+                if (gc != null)
+                {
+                    gc.EndGame();
+                }
             }
         }
     }
