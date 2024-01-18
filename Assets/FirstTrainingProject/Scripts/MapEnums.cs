@@ -25,6 +25,23 @@ namespace FirstTrainingProject
         DownLeft
     }
 
+    //
+    public enum PointForCreateMaze
+    {
+        /// <summary>
+        /// Нет информации
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// Клетка свободна
+        /// </summary>
+        Free = 1,
+        /// <summary>
+        /// Клетка уже занята подо что-то
+        /// </summary>
+        Bysy = 2
+    }
+
     /// <summary>
     /// Direction for a dead-end cell
     /// </summary>

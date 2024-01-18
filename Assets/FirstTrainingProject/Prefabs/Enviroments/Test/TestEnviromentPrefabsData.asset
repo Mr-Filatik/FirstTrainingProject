@@ -29,3 +29,4 @@ MonoBehaviour:
   _crossCellWithoutTwoNotNeighbourPillars: {fileID: 5017508057819336783, guid: 02dde28f79bd0da49999f094a6ea597a, type: 3}
   _crossCellWithoutThreePillars: {fileID: 8554178012629335106, guid: fb2ffccc42cf1f542a56b45d26bee388, type: 3}
   _crossCellWithoutFourPillars: {fileID: 1212538509459770793, guid: 460d1bc5557882e49959a4d90fb19600, type: 3}
+  _floor: {fileID: 8829975683494990689, guid: e4ade8b4e96c24d4f956e35712fac210, type: 3}

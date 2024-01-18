@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 namespace FirstTrainingProject
@@ -20,34 +21,6 @@ namespace FirstTrainingProject
         private EnviromentPrefabsData _enviromentPrefabsData;
         ////public GameObject WallBlank;
         ////public GameObject FloorBlank;
-        //[SerializeField]
-        //private GameObject CeilingStraight;
-        //[SerializeField]
-        //private GameObject CeilingBlindAlley;
-        //[SerializeField]
-        //private GameObject CeilingAngle;
-        //[SerializeField]
-        //private GameObject CeilingAngleWithoutPillar;
-        //[SerializeField]
-        //private GameObject CeilingBranch;
-        //[SerializeField]
-        //private GameObject CeilingBranchWithoutLeftPillar;
-        //[SerializeField]
-        //private GameObject CeilingBranchWithoutRightPillar;
-        //[SerializeField]
-        //private GameObject CeilingBranchWithoutBothPillars;
-        //[SerializeField]
-        //private GameObject CeilingCrossing;
-        //[SerializeField]
-        //private GameObject CeilingCrossingWithoutOnePillar;
-        //[SerializeField]
-        //private GameObject CeilingCrossingWithoutTwoNeighbourPillar;
-        //[SerializeField]
-        //private GameObject CeilingCrossingWithoutTwoNotNeighbourPillar;
-        //[SerializeField]
-        //private GameObject CeilingCrossingWithoutThreePillar;
-        //[SerializeField]
-        //private GameObject CeilingCrossingWithoutFourPillars;
         ////public GameObject DoorLattice;
         ////public GameObject Room;
 
@@ -77,25 +50,6 @@ namespace FirstTrainingProject
 
         private void Awake()
         {
-            //if (WallBlank == null) throw new System.Exception($"WallBlank not set!");
-            //if (FloorBlank == null) throw new System.Exception($"FloorBlank not set!");
-            //if (CeilingStraight == null) throw new System.Exception($"CeilingStraight not set!");
-            //if (CeilingBlindAlley == null) throw new System.Exception($"CeilingBlindAlley not set!");
-            //if (CeilingAngle == null) throw new System.Exception($"CeilingAngle not set!");
-            //if (CeilingAngleWithoutPillar == null) throw new System.Exception($"CeilingAngleWithoutPillar not set!");
-            //if (CeilingBranch == null) throw new System.Exception($"CeilingBranch not set!");
-            //if (CeilingBranchWithoutLeftPillar == null) throw new System.Exception($"CeilingBranchWithoutLeftPillar not set!");
-            //if (CeilingBranchWithoutRightPillar == null) throw new System.Exception($"CeilingBranchWithoutRightPillar not set!");
-            //if (CeilingBranchWithoutBothPillars == null) throw new System.Exception($"CeilingBranchWithoutBothPillars not set!");
-            //if (CeilingCrossing == null) throw new System.Exception($"CeilingCrossing not set!");
-            //if (CeilingCrossingWithoutOnePillar == null) throw new System.Exception($"CeilingCrossingWithoutOnePillar not set!");
-            //if (CeilingCrossingWithoutTwoNeighbourPillar == null) throw new System.Exception($"CeilingCrossingWithoutTwoNeighbourPillar not set!");
-            //if (CeilingCrossingWithoutTwoNotNeighbourPillar == null) throw new System.Exception($"CeilingCrossingWithoutTwoNotNeighbourPillar not set!");
-            //if (CeilingCrossingWithoutThreePillar == null) throw new System.Exception($"CeilingCrossingWithoutThreePillar not set!");
-            //if (CeilingCrossingWithoutFourPillars == null) throw new System.Exception($"CeilingCrossingWithoutFourPillars not set!");
-            //if (StartPoint == null) throw new System.Exception($"StartPoint not set!");
-            //if (EndPoint == null) throw new System.Exception($"EndPoint not set!");
-
             _applicationManager.MapController = this;
 
             height = 15;//PlayerPrefs.GetInt("Size_h"); //only !/2 (3, 5, 7)
@@ -147,18 +101,21 @@ namespace FirstTrainingProject
 
         private void CreatingMap()
         {
-            map_additional = new int[height, width];
-            points_list = new int[((height - 1) / 2) * ((width - 1) / 2), 2];
-            neighbors_list = new int[4, 2];
+            map_additional = new int[height, width]; //дополнительная карта
+            points_list = new int[((height - 1) / 2) * ((width - 1) / 2), 2]; //массив в котором мы сохраняем все координаты точек, которые прошли?
+            
 
+            // 2 - пока не знаю что именно
+            // 1 - задаётся для точек, которые являются ячейками
+            // 0 - задаётся для всех других ячеек
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
                     if (i % 2 == 1 && j % 2 == 1)
                     {
-                        map_main[i, j] = 1;
-                        map_additional[i, j] = 1;
+                        map_main[i, j] = (int)PointForCreateMaze.Free;
+                        map_additional[i, j] = (int)PointForCreateMaze.Free;
                     }
                     else
                     {
@@ -199,25 +156,28 @@ namespace FirstTrainingProject
 
             map_main[1, width - 2] = 2;
             map_main[1, width - 3] = 2;
-            map_main[1, width - 4] = 1;
+            map_main[1, width - 4] = (int)PointForCreateMaze.Free;
 
             map_additional[1, width - 2] = 2;
             map_additional[1, width - 3] = 2;
-            map_additional[1, width - 4] = 1;
+            map_additional[1, width - 4] = (int)PointForCreateMaze.Free;
 
-            points_list[0, 0] = height - 2;
-            points_list[0, 1] = 3;
+            points_list[0, 0] = height - 2; // координата стартовой точки по высоте
+            points_list[0, 1] = 3; // координата старотовой точки по ширинне
             map_main[points_list[0, 0], points_list[0, 1]] = 2;
             map_additional[points_list[0, 0], points_list[0, 1]] = 2;
 
+            //
+
+            neighbors_list = new int[4, 2];
 
             // Finding the base path
             // Поиск базового пути
             points_list_length = 0;
             while (points_list_length >= 0)
             {
-                Search_For_Seighbors(points_list_length, points_list, map_main, ref neighbors_count, ref neighbors_list);
-                Creation_Path(neighbors_count, neighbors_list, ref points_list_length, ref points_list, ref map_main);
+                var availableNeighbors = FindAvailableNeighbors(map_main, points_list_length, points_list);
+                CreationPath(availableNeighbors, ref points_list_length, ref points_list, map_main);
             }
 
             // Finding an extra path (If you need only one way - remove)
@@ -225,12 +185,12 @@ namespace FirstTrainingProject
             points_list_length = 0;
             while (points_list_length >= 0)
             {
-                Search_For_Seighbors(points_list_length, points_list, map_additional, ref neighbors_count, ref neighbors_list);
-                Creation_Path(neighbors_count, neighbors_list, ref points_list_length, ref points_list, ref map_additional);
+                var availableNeighbors = FindAvailableNeighbors(map_additional, points_list_length, points_list);
+                CreationPath(availableNeighbors, ref points_list_length, ref points_list, map_additional);
             }
 
-            // With a 30 percent chance we combine the main and additional routes
-            // С шансом 30 процентов объединяем основной и дополнительные маршруты
+            // With a 33 percent chance we combine the main and additional routes
+            // С шансом 33 процентов объединяем основной и дополнительные маршруты
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
@@ -243,13 +203,14 @@ namespace FirstTrainingProject
             }
 
             CellTypeDefinition(map_main);
+
             VoidsForPremisesDefinition(map_main);
 
             map_main[height - 2, 1] = 5; //set start point
             map_main[1, width - 2] = 6; //set end point
 
             map_main[height - 2, 2] = 11; //path with start point for algoritm
-            map_main[3, 4] = 11; //second path with start point for algoritm
+            map_main[3, 4] = 11; //second path with start point for algoritm (mb room)
             map_main[1, width - 3] = 11; //ent path for algoritm
 
             //map_main[1, 1] = 7; //room point
@@ -263,57 +224,55 @@ namespace FirstTrainingProject
             //map_main[1, 1] = 7;
         }
 
-        private void Search_For_Seighbors(int point_list_size, int[,] point_list, int[,] map, ref int number_of_neighbors, ref int[,] list_of_neighbors)
+        /// <summary>
+        /// Search for all free neighbor cells (cells that are not needed for other purposes)
+        /// </summary>
+        /// <param name="map"> Map (array of integers) </param>
+        /// <param name="point_list_size"></param>
+        /// <param name="point_list"></param>
+        /// <returns> List free neighbor cells (indexes) </returns>
+        /// <remarks> Поиск всех свободных соседних клеток (клеток, которые не нужны для других целей) </remarks>
+        private List<(int hIndex, int wIndex)> FindAvailableNeighbors(int[,] map, int point_list_size, int[,] point_list)
         {
-            number_of_neighbors = 0;
-            if (point_list[point_list_size, 0] > 2)
+            var availableNeighborsList = new List<(int, int)>();
+
+            if (point_list[point_list_size, 0] > 2 && map[point_list[point_list_size, 0] - 2, point_list[point_list_size, 1]] == (int)PointForCreateMaze.Free)
             {
-                if (map[point_list[point_list_size, 0] - 2, point_list[point_list_size, 1]] == 1)
-                {
-                    list_of_neighbors[number_of_neighbors, 0] = point_list[point_list_size, 0] - 2;
-                    list_of_neighbors[number_of_neighbors, 1] = point_list[point_list_size, 1];
-                    number_of_neighbors++;
-                }
+                availableNeighborsList.Add((point_list[point_list_size, 0] - 2, point_list[point_list_size, 1]));
             }
-            if (point_list[point_list_size, 1] < map.GetUpperBound(1) - 2)
+            if (point_list[point_list_size, 1] < map.GetUpperBound(1) - 2 && map[point_list[point_list_size, 0], point_list[point_list_size, 1] + 2] == (int)PointForCreateMaze.Free)
             {
-                if (map[point_list[point_list_size, 0], point_list[point_list_size, 1] + 2] == 1)
-                {
-                    list_of_neighbors[number_of_neighbors, 0] = point_list[point_list_size, 0];
-                    list_of_neighbors[number_of_neighbors, 1] = point_list[point_list_size, 1] + 2;
-                    number_of_neighbors++;
-                }
+                availableNeighborsList.Add((point_list[point_list_size, 0], point_list[point_list_size, 1] + 2));
             }
-            if (point_list[point_list_size, 0] < map.GetUpperBound(0) - 2)
+            if (point_list[point_list_size, 0] < map.GetUpperBound(0) - 2 && map[point_list[point_list_size, 0] + 2, point_list[point_list_size, 1]] == (int)PointForCreateMaze.Free)
             {
-                if (map[point_list[point_list_size, 0] + 2, point_list[point_list_size, 1]] == 1)
-                {
-                    list_of_neighbors[number_of_neighbors, 0] = point_list[point_list_size, 0] + 2;
-                    list_of_neighbors[number_of_neighbors, 1] = point_list[point_list_size, 1];
-                    number_of_neighbors++;
-                }
+                availableNeighborsList.Add((point_list[point_list_size, 0] + 2, point_list[point_list_size, 1]));
             }
-            if (point_list[point_list_size, 1] > 2)
+            if (point_list[point_list_size, 1] > 2 && map[point_list[point_list_size, 0], point_list[point_list_size, 1] - 2] == (int)PointForCreateMaze.Free)
             {
-                if (map[point_list[point_list_size, 0], point_list[point_list_size, 1] - 2] == 1)
-                {
-                    list_of_neighbors[number_of_neighbors, 0] = point_list[point_list_size, 0];
-                    list_of_neighbors[number_of_neighbors, 1] = point_list[point_list_size, 1] - 2;
-                    number_of_neighbors++;
-                }
+                availableNeighborsList.Add((point_list[point_list_size, 0], point_list[point_list_size, 1] - 2));
             }
+
+            return availableNeighborsList;
         }
 
-        private void Creation_Path(int number_of_neighbors, int[,] list_of_neighbors, ref int point_list_size, ref int[,] point_list, ref int[,] map)
+        // метод создания пути из текущей точки в следующую
+        private void CreationPath(List<(int hIndex, int wIndex)> list_of_neighbors, ref int point_list_size, ref int[,] point_list, int[,] map)
         {
-            if (number_of_neighbors > 0)
+            if (list_of_neighbors.Count > 0)
             {
-                random_neighbor = Random.Range(0, number_of_neighbors);
+                // выбор рандомного соседа
+                random_neighbor = Random.Range(0, list_of_neighbors.Count);
+
+                //добавляем его в массив
                 point_list_size++;
-                point_list[point_list_size, 0] = list_of_neighbors[random_neighbor, 0];
-                point_list[point_list_size, 1] = list_of_neighbors[random_neighbor, 1];
-                map[Mathf.Abs(point_list[point_list_size, 0] + point_list[point_list_size - 1, 0]) / 2, Mathf.Abs(point_list[point_list_size, 1] + point_list[point_list_size - 1, 1]) / 2] = 2;
-                map[point_list[point_list_size, 0], point_list[point_list_size, 1]] = 2; //2 - ��������
+                point_list[point_list_size, 0] = list_of_neighbors[random_neighbor].hIndex;
+                point_list[point_list_size, 1] = list_of_neighbors[random_neighbor].wIndex;
+
+                //указываем что точка смежная для выбранной и текущей пройдена (стена) (становится недоступной для прохода)
+                map[Mathf.Abs(point_list[point_list_size, 0] + point_list[point_list_size - 1, 0]) / 2, Mathf.Abs(point_list[point_list_size, 1] + point_list[point_list_size - 1, 1]) / 2] = (int)PointForCreateMaze.Bysy;
+                //указываем что текущая точка уже пройдена (становится недоступной для прохода)
+                map[point_list[point_list_size, 0], point_list[point_list_size, 1]] = (int)PointForCreateMaze.Bysy;
             }
             else
             {
@@ -732,14 +691,23 @@ namespace FirstTrainingProject
         private void DrawMap(int[,] map)
         {
             ClearInvironments();
+
+            //create floor
+            float height = 0F;
+            float size = _enviromentPrefabsData.CellSize / 2;
+            //object_being_created = Instantiate(_enviromentPrefabsData.Floor, Parent.transform);
+            //object_being_created.transform.localScale = new Vector3((map.GetUpperBound(1) / 2) * size, 1, (map.GetUpperBound(0) / 2) * size);
+            //object_being_created.transform.localPosition = new Vector3((map.GetUpperBound(1) / 2) * size, height, (map.GetUpperBound(0) / 2) * size);
+
+            //create cells
             for (int i = 1; i <= map.GetUpperBound(0); i += 2)
             {
                 for (int j = 1; j <= map.GetUpperBound(1); j += 2)
                 {
                     //Debug.Log($"Draw {map[i, j]} ({i}, {j})");
 
-                    float size = _enviromentPrefabsData.CellSize / 2;
-                    coordinates = new Vector3(j * size, 2f, (map.GetUpperBound(0) - i) * size);
+                    
+                    coordinates = new Vector3(j * size, height, (map.GetUpperBound(0) - i) * size);
                     if (map[i, j] == 5)
                     {
                         Createanenvironmentinstance(_enviromentPrefabsData.StartCell, DirectionForInstance.Up);

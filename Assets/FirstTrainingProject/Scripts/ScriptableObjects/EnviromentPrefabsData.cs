@@ -6,7 +6,7 @@ namespace FirstTrainingProject
     [CreateAssetMenu(fileName = "EnviromentPrefabsData", menuName = "ScriptableObjects/EnviromentPrefabsData", order = 2)]
     public class EnviromentPrefabsData : ScriptableObject
     {
-        #region Cells
+        #region Serialize Field
 
         [Header("Values")]
 
@@ -49,6 +49,10 @@ namespace FirstTrainingProject
         private GameObject _crossCellWithoutThreePillars;
         [SerializeField]
         private GameObject _crossCellWithoutFourPillars;
+
+        [Header("Other prefabs")]
+        [SerializeField]
+        private GameObject _floor;
 
         #endregion
 
@@ -155,6 +159,12 @@ namespace FirstTrainingProject
         /// </summary>
         /// <remarks> Перекрёстная ячейка без четырёх опор </remarks>
         public GameObject CrossCellWithoutFourPillars => _crossCellWithoutFourPillars;
+
+        /// <summary>
+        /// Froor
+        /// </summary>
+        /// /// <remarks> Пол </remarks>
+        public GameObject Floor => _floor;
 
         #endregion
     }
