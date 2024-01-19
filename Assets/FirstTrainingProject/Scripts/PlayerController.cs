@@ -11,7 +11,10 @@ namespace FirstTrainingProject
         private float _movementSpeed; // 2
 
         [SerializeField]
-        private float _rotateSpeed; // 100
+        private float _rotateSpeed; // 400
+
+        [SerializeField]
+        private GameObject _head;
 
         [SerializeField]
         private ApplicationManager _applicationManager;
@@ -29,7 +32,9 @@ namespace FirstTrainingProject
         private void Update()
         {
             transform.Translate(Vector3.forward * Input.GetAxis("Vertical") * _movementSpeed * Time.deltaTime);
-            transform.Rotate(Vector3.up, Input.GetAxis("Horizontal") * _rotateSpeed * Time.deltaTime);
+            transform.Translate(Vector3.right * Input.GetAxis("Horizontal") * _movementSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * _rotateSpeed * Time.deltaTime);
+            _head.transform.Rotate(Vector3.left, Input.GetAxis("Mouse Y") * _rotateSpeed * Time.deltaTime);
         }
     }
 }

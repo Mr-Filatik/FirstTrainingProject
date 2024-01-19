@@ -75,7 +75,7 @@ namespace FirstTrainingProject
 
         private void SetDataOnScreen(int count, DateTime dateTime)
         {
-            _screen.text = $"Это комната - меню игры.\r\nЗдесь время игры останавливается.\r\n\r\nНажмите Escape для переход на уровень \r\n(и для возвращения обратно).\r\n\r\nКарта уже создана, пройдено {count} раз.\r\n\r\nЗатрачено времени {dateTime.Minute} м. {dateTime.Second} с.";
+            _screen.text = $"Это комната - меню игры.\r\nЗдесь время игры останавливается.\r\nНажмите Space скрыть/показать курсор \r\nНажмите Escape для переход на уровень \r\n(и для возвращения обратно).\r\n\r\nКарта уже создана, пройдено {count} раз.\r\n\r\nЗатрачено времени {dateTime.Minute} м. {dateTime.Second} с.";
         }
 
         #region Unity Medhods
@@ -98,6 +98,8 @@ namespace FirstTrainingProject
             _isMenu = true;
         }
 
+        private bool _cursorVisible = false;
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
@@ -117,6 +119,22 @@ namespace FirstTrainingProject
                     _playerController.gameObject.transform.eulerAngles = Vector3.zero;
                     _isMenu = true;
                 }
+            }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (_cursorVisible)
+                {
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                    Debug.Log($"<color=green>Cursor Show</color>");
+                }
+                else
+                {
+                    Cursor.visible = false;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Debug.Log($"<color=red>Cursor Hide</color>");
+                }
+                _cursorVisible = !_cursorVisible;
             }
         }
 
