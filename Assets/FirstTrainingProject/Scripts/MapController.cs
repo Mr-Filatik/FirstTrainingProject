@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 namespace FirstTrainingProject
@@ -28,6 +29,9 @@ namespace FirstTrainingProject
 
         [Header("Other")]
 
+        [SerializeField]
+        private NavMeshSurface _navMeshSurface;
+
         //Variables
         static int height;
         static int width;
@@ -40,7 +44,7 @@ namespace FirstTrainingProject
         private int points_list_length = 0;
         private int[,] points_list;
         private int[,] neighbors_list;
-        private int neighbors_count = 0;
+        //private int neighbors_count = 0;
         private int random_neighbor;
 
         private Vector3 coordinates;
@@ -97,6 +101,8 @@ namespace FirstTrainingProject
         {
             CreatingMap();
             DrawMap(map_main);
+
+            _navMeshSurface.BuildNavMesh();
         }
 
         private void CreatingMap()

@@ -22,7 +22,7 @@ namespace FirstTrainingProject
         private bool _isMenu = false;
         private Vector3 _spawnPositionInLevel;
         private Vector3 _spawnRotateInLevel;
-        private DateTime? _startTime = null;
+        //private DateTime? _startTime = null;
         private int _count = 0;
 
         //private static GameController _instance;
