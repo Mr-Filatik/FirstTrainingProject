@@ -2,31 +2,80 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace FirstTrainingProject
 {
     public class PlayerController : MonoBehaviour
     {
+        #region Serialize Fields
+
+        [Header("Main")]
+
+        [SerializeField]
+        private ApplicationManager _applicationManager;
+
+        [Header("Values")]
+
         [SerializeField]
         private float _movementSpeed; // 2
 
         [SerializeField]
         private float _rotateSpeed; // 400
 
+        [Header("Parts")]
+
         [SerializeField]
         private GameObject _head;
 
-        [SerializeField]
-        private ApplicationManager _applicationManager;
+        #endregion
+
+        #region Private Fields
+
+
+
+        #endregion
+
+        #region Public Methods
+
+        public void SetPosition(Vector3 position, Vector3 rotation)
+        {
+            gameObject.transform.position = position;
+            gameObject.transform.eulerAngles = rotation;
+        }
+
+        public void GetCurrentPosition()
+        {
+            _applicationManager.GameController.SetNewSpawnPlaceInLevel(gameObject.transform.position, gameObject.transform.eulerAngles);
+        }
+
+        public void PlayerInitApplication()
+        {
+            gameObject.transform.eulerAngles = Vector3.zero;
+            _head.transform.eulerAngles = Vector3.zero;
+        }
+
+        #endregion
+
+        #region Unity Medhods
 
         private void Awake()
         {
+            if (_head == null) throw new System.Exception($"Head not set!");
+            if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
+
             _applicationManager.PlayerController = this;
+
+            _applicationManager.ApplicationGameInited += PlayerInitApplication; // m.b remove
+            _applicationManager.ApplicationGamePaused += GetCurrentPosition;
+            //_applicationManager.ApplicationGameEnded += GetCurrentPosition;
         }
 
-        private void Start()
+        private void OnDestroy()
         {
-            //transform.position = new Vector3(1, 3, 1);
+            _applicationManager.ApplicationGameInited -= PlayerInitApplication; // m.b remove
+            _applicationManager.ApplicationGamePaused -= GetCurrentPosition;
+            //_applicationManager.ApplicationGameEnded -= GetCurrentPosition;
         }
 
         private void Update()
@@ -36,5 +85,7 @@ namespace FirstTrainingProject
             transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * _rotateSpeed * Time.deltaTime);
             _head.transform.Rotate(Vector3.left, Input.GetAxis("Mouse Y") * _rotateSpeed * Time.deltaTime);
         }
+
+        #endregion
     }
 }

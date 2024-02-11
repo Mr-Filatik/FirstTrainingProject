@@ -9,15 +9,14 @@ namespace FirstTrainingProject
         [SerializeField]
         private ApplicationManager _applicationManager;
 
+        [SerializeField]
+        private bool _isWin = false;
+
         private void OnTriggerEnter(Collider other)
         {
-            if (other != null && other.tag == "Player")
+            if (other != null && other.CompareTag("Player"))
             {
-                var gc = _applicationManager.GameController;
-                if (gc != null)
-                {
-                    gc.EndGame();
-                }
+                _applicationManager.ApplicationGameEnd(_isWin);
             }
         }
     }

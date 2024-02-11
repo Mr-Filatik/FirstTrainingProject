@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -8,74 +9,107 @@ namespace FirstTrainingProject
 {
     public class GameController : MonoBehaviour
     {
-        private PlayerController _playerController;
+        #region Serialize Fields
 
         [SerializeField]
         private ApplicationManager _applicationManager;
-
+        
         [SerializeField]
         private GameObject _spawnPlaceMenu;
 
         [SerializeField]
         private TMP_Text _screen;
 
-        private bool _isMenu = false;
+        #endregion
+
+        #region Private Fields
+
+        private bool _isPause = false;
+        private Vector3 _spawnPositionInMenu => _spawnPlaceMenu.transform.position;
+        private Vector3 _spawnRotateInMenu => _spawnPlaceMenu.transform.eulerAngles;
         private Vector3 _spawnPositionInLevel;
         private Vector3 _spawnRotateInLevel;
-        //private DateTime? _startTime = null;
-        private int _count = 0;
+        private DateTime _time = DateTime.MinValue;
+        private DateTime _timeTmp = DateTime.MinValue;
+        private DateTime _bestTime = DateTime.MaxValue;
+        private int _countWin = 0;
+        private int _countLose = 0;
 
-        //private static GameController _instance;
+        #endregion
 
-        public void SetNewSpawnPlaceInLevel(Vector3 spawnPositionInLevel)
+        public void SetNewSpawnPlaceInLevel(Vector3 position, Vector3 rotation)
         {
-            _spawnPositionInLevel = spawnPositionInLevel;
-            _spawnRotateInLevel = Vector3.up * 90;
+            _spawnPositionInLevel = position;
+            _spawnRotateInLevel = rotation;
         }
 
-        public void Init()
-        {
-
-        }
+        //public void GameInit()
+        //{
+        //    _applicationManager.PlayerController.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
+        //}
 
         public void GameStart()
         {
+            _isPause = false;
 
+            _applicationManager.PlayerController.SetPosition(_spawnPositionInLevel, _spawnRotateInLevel);
+
+            _time = DateTime.MinValue;
+            _timeTmp = DateTime.Now;
         }
 
         public void GamePause()
         {
+            _isPause = true;
 
+            _applicationManager.PlayerController.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
+
+            DateTime now = DateTime.Now;
+            var delta = now.AddHours(-_timeTmp.Hour).AddMinutes(-_timeTmp.Minute).AddSeconds(-_timeTmp.Second);
+            _time = _time.AddHours(delta.Hour).AddMinutes(delta.Minute).AddSeconds(delta.Second);
         }
 
         public void GameContinue()
         {
+            _isPause = false;
 
+            _applicationManager.PlayerController.SetPosition(_spawnPositionInLevel, _spawnRotateInLevel);
+
+            _timeTmp = DateTime.Now;
         }
 
-        public void GameEnd()
+        public void GameEnd(bool isWin)
         {
+            _isPause = true;
 
+            _applicationManager.PlayerController.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
+
+            _applicationManager.ApplicationGameInit();
+
+            DateTime now = DateTime.Now;
+            var delta = now.AddHours(-_timeTmp.Hour).AddMinutes(-_timeTmp.Minute).AddSeconds(-_timeTmp.Second);
+            _time = _time.AddHours(delta.Hour).AddMinutes(delta.Minute).AddSeconds(delta.Second);
+
+            if (isWin)
+            {
+                if (_bestTime > _time)
+                {
+                    _bestTime = _time;
+                }
+
+                _countWin++;
+                SetDataOnScreen(true);
+            }
+            else
+            {
+                _countLose++;
+                SetDataOnScreen(false);
+            }
         }
 
-        public void EndGame()
+        private void SetDataOnScreen(bool isWin)
         {
-            _spawnPositionInLevel = _playerController.gameObject.transform.position;
-            _spawnRotateInLevel = _playerController.gameObject.transform.eulerAngles;
-
-            _playerController.gameObject.transform.position = _spawnPlaceMenu.transform.position;
-            _playerController.gameObject.transform.eulerAngles = Vector3.zero;
-
-            _applicationManager.MapController.MyStart();
-
-            SetDataOnScreen(++_count, DateTime.MinValue);
-
-            _isMenu = true;
-        }
-
-        private void SetDataOnScreen(int count, DateTime dateTime)
-        {
-            _screen.text = $"Это комната - меню игры.\r\nЗдесь время игры останавливается.\r\nНажмите Space скрыть/показать курсор \r\nНажмите Escape для переход на уровень \r\n(и для возвращения обратно).\r\n\r\nКарта уже создана, пройдено {count} раз.\r\n\r\nЗатрачено времени {dateTime.Minute} м. {dateTime.Second} с.";
+            _screen.text = $"This room is the game's menu.\r\nTo start the game, go to the green zone.\r\nPress Space to hide/show the cursor.\r\nPress Escape to exit here (to the menu).\r\n\r\nMap already created, passed {_countWin + _countLose} times.\r\nTime spent {_time.Minute} m. {_time.Second} s. (Best time {_bestTime.Minute} m. {_bestTime.Second} s.).\r\n{(isWin ? "Yep :) !YOU IS WIN! (: peY" : "Sorry :( !YOU IS DEAD! ): yrroS")}\r\nCount win {_countWin}, count lose {_countLose}.";
         }
 
         #region Unity Medhods
@@ -84,57 +118,50 @@ namespace FirstTrainingProject
         {
             if (_spawnPlaceMenu == null) throw new System.Exception($"SpawnPlaceMenu not set!");
             if (_screen == null) throw new System.Exception($"Screen not set!");
+            if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
 
             _applicationManager.GameController = this;
+
+            _applicationManager.ApplicationGameStarted += GameStart;
+            _applicationManager.ApplicationGamePaused += GamePause;
+            _applicationManager.ApplicationGameContinued += GameContinue;
+            _applicationManager.ApplicationGameEnded += GameEnd;
+        }
+
+        private void OnDestroy()
+        {
+            _applicationManager.ApplicationGameStarted -= GameStart;
+            _applicationManager.ApplicationGamePaused -= GamePause;
+            _applicationManager.ApplicationGameContinued -= GameContinue;
+            _applicationManager.ApplicationGameEnded -= GameEnd;
         }
 
         private void Start()
         {
-            _playerController = _applicationManager.PlayerController;
+            _applicationManager.PlayerController?.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
 
-            _playerController.gameObject.transform.position = _spawnPlaceMenu.transform.position;
-            _playerController.gameObject.transform.eulerAngles = Vector3.zero;
+            _isPause = true;
 
-            _isMenu = true;
+            _screen.text = $"This room is the game's menu.\r\nTo start the game, go to the green zone.\r\nPress Space to hide/show the cursor.\r\nPress Escape to exit here (to the menu).\r\n\r\nMap already created, passed {_countWin + _countLose} times.\r\nTime spent {0} m. {0} s. (Best time {0} m. {0} s.).";
+
+            _applicationManager.ApplicationGameInit(); //запускам настройку и создание карты, внутри метода создания вызываем старт игры
         }
-
-        private bool _cursorVisible = false;
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (_isMenu)
+                if (!_isPause)
                 {
-                    _playerController.gameObject.transform.position = _spawnPositionInLevel;
-                    _playerController.gameObject.transform.eulerAngles = _spawnRotateInLevel;
-                    _isMenu = false;
-                }
-                else
-                {
-                    _spawnPositionInLevel = _playerController.gameObject.transform.position;
-                    _spawnRotateInLevel = _playerController.gameObject.transform.eulerAngles;
-
-                    _playerController.gameObject.transform.position = _spawnPlaceMenu.transform.position;
-                    _playerController.gameObject.transform.eulerAngles = Vector3.zero;
-                    _isMenu = true;
+                    _applicationManager.ApplicationGamePause();
                 }
             }
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                if (_cursorVisible)
-                {
-                    Cursor.visible = true;
-                    Cursor.lockState = CursorLockMode.None;
-                    Debug.Log($"<color=green>Cursor Show</color>");
-                }
-                else
-                {
-                    Cursor.visible = false;
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Debug.Log($"<color=red>Cursor Hide</color>");
-                }
-                _cursorVisible = !_cursorVisible;
+                Cursor.visible = !Cursor.visible;
+                Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
+                Debug.Log($"Cursor {Cursor.lockState}.");
             }
         }
 

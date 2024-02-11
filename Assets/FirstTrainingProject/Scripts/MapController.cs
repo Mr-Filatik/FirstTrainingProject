@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using Unity.AI.Navigation;
 using UnityEngine;
 
@@ -14,7 +15,9 @@ namespace FirstTrainingProject
         private ApplicationManager _applicationManager;
 
         [Header("Enviroment parent")]
-        public GameObject Parent;
+
+        [SerializeField]
+        private GameObject _parentForEviroment;
 
         [Header("Enviroment prefabs")]
 
@@ -54,59 +57,47 @@ namespace FirstTrainingProject
 
         private void Awake()
         {
+            if (_parentForEviroment == null) throw new System.Exception($"ParentForEnviroment not set!");
+            if (_navMeshSurface == null) throw new System.Exception($"NavMeshSurface not set!");
+            if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
+
             _applicationManager.MapController = this;
 
-            height = 15;//PlayerPrefs.GetInt("Size_h"); //only !/2 (3, 5, 7)
-            width = 21;//PlayerPrefs.GetInt("Size_w"); //only !/2 (3, 5, 7)
-            map_main = new int[height, width];
-            //if (PlayerPrefs.GetString("Map") == "")
-            //{
-            //CreatingMap();
-            //Map_Saver();
-            //GameObject.Find("Enemy").GetComponent<NewBehaviourScript>().Map_Load();
-            //}
-            //else
-            //{
-            //    Map_Load();
-            //}
-            //Debug.Log(map_main.Length);
-            //Drawing_Map(map_main);
+            _applicationManager.ApplicationGameInited += MapCreate;
+            //_applicationManager.ApplicationGameEnded += MapCreate;
         }
 
-        void Start()
+        private void OnDestroy()
         {
-            MyStart();
-            /*height = PlayerPrefs.GetInt("Size_h");
-            width = PlayerPrefs.GetInt("Size_w");
-            map_main = new int[height, width];
-            if (PlayerPrefs.GetString("Map") == "")
-            {
-                Creation_Map();
-                Map_Saver();
-                //GameObject.Find("Enemy").GetComponent<NewBehaviourScript>().Map_Load();
-            }
-            else
-            {
-                Map_Load();
-            }
-            Drawing_Map(map_main);*/
+            _applicationManager.ApplicationGameInited -= MapCreate;
+            //_applicationManager.ApplicationGameEnded -= MapCreate;
         }
 
-        void Update()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="height"> Height (only !/2 (3, 5, 7, ...)) </param>
+        /// <param name="width"> Width (only !/2 (3, 5, 7, ...)) </param>
+        /// <returns></returns>
+        public void MapCreate()
         {
-
-        }
-
-        public void MyStart()
-        {
-            CreatingMap();
+            CreatingMap(15, 21);
+            ClearInvironments();
             DrawMap(map_main);
 
             _navMeshSurface.BuildNavMesh();
+
+            //_applicationManager.PlayerController.SetPosition();
         }
 
-        private void CreatingMap()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="height"> Height (only !/2 (3, 5, 7, ...)) </param>
+        /// <param name="width"> Width (only !/2 (3, 5, 7, ...)) </param>
+        private void CreatingMap(int height, int width)
         {
+            map_main = new int[height, width];
             map_additional = new int[height, width]; //дополнительная карта
             points_list = new int[((height - 1) / 2) * ((width - 1) / 2), 2]; //массив в котором мы сохраняем все координаты точек, которые прошли?
             
@@ -696,8 +687,6 @@ namespace FirstTrainingProject
 
         private void DrawMap(int[,] map)
         {
-            ClearInvironments();
-
             //create floor
             float height = 0F;
             float size = _enviromentPrefabsData.CellSize / 2;
@@ -718,9 +707,11 @@ namespace FirstTrainingProject
                     {
                         Createanenvironmentinstance(_enviromentPrefabsData.StartCell, DirectionForInstance.Up);
 
-                        coordinates += new Vector3(0F, 0.5F, 0F);
-                        var am = _applicationManager.GameController;
-                        am.SetNewSpawnPlaceInLevel(coordinates);
+                        coordinates += new Vector3(0F, 0.001F, 0F);
+                        var angle = new Vector3(0F, (float)DirectionForInstance.Up, 0F); //need change
+
+                        _applicationManager.GameController?.SetNewSpawnPlaceInLevel(coordinates, angle);
+
                         //if (am != null)
                         //{
                         //    Debug.Log("!= null");
@@ -730,6 +721,13 @@ namespace FirstTrainingProject
                     if (map[i, j] == 6)
                     {
                         Createanenvironmentinstance(_enviromentPrefabsData.EndCell, DirectionForInstance.Down);
+
+                        coordinates += new Vector3(0F, 0.001F, 0F);
+                        var angle = new Vector3(0F, (float)DirectionForInstance.Down, 0F); //need change
+
+                        //_applicationManager.GameController?.SetNewSpawnPlaceInLevelEnemy(coordinates, angle);
+                        _applicationManager.EnemyController?.SetPosition(coordinates, angle);
+                        _applicationManager.EnemyController?.SetTarget(_applicationManager.PlayerController.transform);
                     }
                     //if (map[i, j] == 7)
                     //{
@@ -1013,62 +1011,97 @@ namespace FirstTrainingProject
 
         private void Createanenvironmentinstance(GameObject prefab, DirectionForInstance direction = DirectionForInstance.Left)
         {
-            object_being_created = Instantiate(prefab, Parent.transform);
+            object_being_created = Instantiate(prefab, _parentForEviroment.transform);
             object_being_created.transform.position = coordinates;
             object_being_created.transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + (float)direction, transform.eulerAngles.z);
         }
 
         private void ClearInvironments()
         {
-            for (int i = Parent.transform.childCount - 1; i >= 0; i--)
+            Vector3 position = Vector3.zero;
+            for (int i = _parentForEviroment.transform.childCount - 1; i >= 0; i--)
             {
-                Destroy(Parent.transform.GetChild(i).gameObject);
+                // fix nav mesh bake method
+                position = _parentForEviroment.transform.GetChild(i).gameObject.transform.position;
+                position.y -= 10;
+                _parentForEviroment.transform.GetChild(i).gameObject.transform.position = position;
+
+                Destroy(_parentForEviroment.transform.GetChild(i).gameObject);
             }
         }
 
         private void Map_Saver()
         {
-            string map = "";
-            for (int i = 0; i < height; i++)
+            //string map = "";
+            //for (int i = 0; i < height; i++)
+            //{
+            //    for (int j = 0; j < width; j++)
+            //    {
+            //        map += map_main[i, j];
+            //        map += ",";
+            //    }
+            //    map += ";";
+            //}
+            //PlayerPrefs.SetString("Map", map);
+
+            //if (PlayerPrefs.GetString("Map") == "")
+            //{
+            //CreatingMap();
+            //Map_Saver();
+            //GameObject.Find("Enemy").GetComponent<NewBehaviourScript>().Map_Load();
+            //}
+            //else
+            //{
+            //    Map_Load();
+            //}
+            //Debug.Log(map_main.Length);
+            //Drawing_Map(map_main);
+
+            //MyStart();
+            /*height = PlayerPrefs.GetInt("Size_h");
+            width = PlayerPrefs.GetInt("Size_w");
+            map_main = new int[height, width];
+            if (PlayerPrefs.GetString("Map") == "")
             {
-                for (int j = 0; j < width; j++)
-                {
-                    map += map_main[i, j];
-                    map += ",";
-                }
-                map += ";";
+                Creation_Map();
+                Map_Saver();
+                //GameObject.Find("Enemy").GetComponent<NewBehaviourScript>().Map_Load();
             }
-            PlayerPrefs.SetString("Map", map);
+            else
+            {
+                Map_Load();
+            }
+            Drawing_Map(map_main);*/
         }
 
         private void Map_Load()
         {
-            string map = PlayerPrefs.GetString("Map");
-            int i = 0;
-            int j = 0;
-            string number = "";
-            foreach (char el in map)
-            {
-                if (el == ',' || el == ';')
-                {
-                    if (el == ',')
-                    {
-                        //map_main[j, i] = int.Parse(number, System.Globalization.NumberStyles.Integer);
-                        map_main[j, i] = int.Parse(number);
-                        i++;
-                    }
-                    if (el == ';')
-                    {
-                        i = 0;
-                        j++;
-                    }
-                    number = "";
-                }
-                else
-                {
-                    number += el;
-                }
-            }
+            //string map = PlayerPrefs.GetString("Map");
+            //int i = 0;
+            //int j = 0;
+            //string number = "";
+            //foreach (char el in map)
+            //{
+            //    if (el == ',' || el == ';')
+            //    {
+            //        if (el == ',')
+            //        {
+            //            //map_main[j, i] = int.Parse(number, System.Globalization.NumberStyles.Integer);
+            //            map_main[j, i] = int.Parse(number);
+            //            i++;
+            //        }
+            //        if (el == ';')
+            //        {
+            //            i = 0;
+            //            j++;
+            //        }
+            //        number = "";
+            //    }
+            //    else
+            //    {
+            //        number += el;
+            //    }
+            //}
         }
     }
 }
