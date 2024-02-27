@@ -2242,6 +2242,8 @@ MonoBehaviour:
   _applicationManager: {fileID: 11400000, guid: e91eb72b35418ce4db8a64a1093a59d8, type: 2}
   _movementSpeed: 2
   _rotateSpeed: 400
+  _limitAngleTop: 30
+  _limitAngleBottom: 60
   _head: {fileID: 718891828}
 --- !u!4 &1788399022
 Transform:

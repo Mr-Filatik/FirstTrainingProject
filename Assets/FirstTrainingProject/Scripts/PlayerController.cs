@@ -18,10 +18,16 @@ namespace FirstTrainingProject
         [Header("Values")]
 
         [SerializeField]
-        private float _movementSpeed; // 2
+        private float _movementSpeed = 2;
 
         [SerializeField]
-        private float _rotateSpeed; // 400
+        private float _rotateSpeed = 400;
+
+        [SerializeField]
+        private float _limitAngleTop = 30;
+
+        [SerializeField]
+        private float _limitAngleBottom = 60;
 
         [Header("Parts")]
 
@@ -84,6 +90,17 @@ namespace FirstTrainingProject
             transform.Translate(Vector3.right * Input.GetAxis("Horizontal") * _movementSpeed * Time.deltaTime);
             transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * _rotateSpeed * Time.deltaTime);
             _head.transform.Rotate(Vector3.left, Input.GetAxis("Mouse Y") * _rotateSpeed * Time.deltaTime);
+
+            var currentAngles = _head.transform.localEulerAngles;
+            if (currentAngles.x > 180F && currentAngles.x < 360F - _limitAngleTop)
+            {
+                currentAngles.x = -_limitAngleTop;
+            }
+            if (currentAngles.x < 180F && currentAngles.x > _limitAngleBottom)
+            {
+                currentAngles.x = _limitAngleBottom;
+            }
+            _head.transform.localEulerAngles = currentAngles;
         }
 
         #endregion
