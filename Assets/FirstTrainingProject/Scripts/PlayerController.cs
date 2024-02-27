@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
@@ -18,7 +19,7 @@ namespace FirstTrainingProject
         [Header("Values")]
 
         [SerializeField]
-        private float _movementSpeed = 2;
+        private float _movementSpeed = 1.5F;
 
         [SerializeField]
         private float _rotateSpeed = 400;
@@ -36,9 +37,28 @@ namespace FirstTrainingProject
 
         #endregion
 
+        #region Public Fields
+
+        public event Action<float> EnduranceChanged;
+
+        #endregion
+
         #region Private Fields
 
-        private float _runAcceleration = 1.5F;
+        private bool _isRun = false;
+        private float _runAcceleration = 2F;
+
+        private float _endurance = 0F;
+        private float _enduranceMin = 0F;
+        private float _enduranceMax = 1F;
+        private float _enduranceFlowRate = 0.5F;
+        private float _enduranceRecoveryRate = 0.15F;
+
+        #endregion
+
+        #region Public Properties
+
+
 
         #endregion
 
@@ -86,7 +106,34 @@ namespace FirstTrainingProject
 
         private void Update()
         {
-            var acceleration = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? _runAcceleration : 1F;
+            if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && Input.GetAxis("Vertical") != 0)
+            {
+                _isRun = true;
+            }
+            if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift))
+            {
+                _isRun = false;
+            }
+            if (_isRun)
+            {
+                _endurance -= _enduranceFlowRate * Time.deltaTime;
+                if (_endurance <= _enduranceMin)
+                {
+                    _isRun = false;
+                    _endurance = _enduranceMin;
+                }
+            }
+            else
+            {
+                _endurance += _enduranceRecoveryRate * Time.deltaTime;
+                if (_endurance >= _enduranceMax)
+                {
+                    _endurance = _enduranceMax;
+                }
+            }
+            EnduranceChanged?.Invoke(_endurance);
+            var acceleration = _isRun ? _runAcceleration : 1F;
+
             transform.Translate(Vector3.forward * Input.GetAxis("Vertical") * _movementSpeed * Time.deltaTime * acceleration);
             transform.Translate(Vector3.right * Input.GetAxis("Horizontal") * _movementSpeed * Time.deltaTime);
             transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * _rotateSpeed * Time.deltaTime);
