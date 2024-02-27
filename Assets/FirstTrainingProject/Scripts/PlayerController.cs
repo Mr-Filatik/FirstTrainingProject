@@ -38,7 +38,7 @@ namespace FirstTrainingProject
 
         #region Private Fields
 
-
+        private float _runAcceleration = 1.5F;
 
         #endregion
 
@@ -86,7 +86,8 @@ namespace FirstTrainingProject
 
         private void Update()
         {
-            transform.Translate(Vector3.forward * Input.GetAxis("Vertical") * _movementSpeed * Time.deltaTime);
+            var acceleration = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? _runAcceleration : 1F;
+            transform.Translate(Vector3.forward * Input.GetAxis("Vertical") * _movementSpeed * Time.deltaTime * acceleration);
             transform.Translate(Vector3.right * Input.GetAxis("Horizontal") * _movementSpeed * Time.deltaTime);
             transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * _rotateSpeed * Time.deltaTime);
             _head.transform.Rotate(Vector3.left, Input.GetAxis("Mouse Y") * _rotateSpeed * Time.deltaTime);
