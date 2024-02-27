@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57f7ac32e0fdf30428b816df3f0be8c3, type: 3}
+  m_Name: HorrorEnviromentPrefabsData
+  m_EditorClassIdentifier: 
+  _cellSize: 0
+  _startCell: {fileID: 0}
+  _endCell: {fileID: 0}
+  _deadEndCell: {fileID: 0}
+  _straightCell: {fileID: 0}
+  _cornerCell: {fileID: 0}
+  _cornerCellWithoutPillar: {fileID: 0}
+  _branchCell: {fileID: 0}
+  _branchCellWithoutLeftPillar: {fileID: 0}
+  _branchCellWithoutRightPillar: {fileID: 0}
+  _branchCellWithoutBothPillars: {fileID: 0}
+  _crossCell: {fileID: 0}
+  _crossCellWithoutOnePillar: {fileID: 0}
+  _crossCellWithoutTwoNeighbourPillars: {fileID: 0}
+  _crossCellWithoutTwoNotNeighbourPillars: {fileID: 0}
+  _crossCellWithoutThreePillars: {fileID: 0}
+  _crossCellWithoutFourPillars: {fileID: 0}
+  _floor: {fileID: 0}

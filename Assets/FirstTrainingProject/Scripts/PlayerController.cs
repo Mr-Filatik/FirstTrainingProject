@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -22,13 +23,13 @@ namespace FirstTrainingProject
         private float _movementSpeed = 1.5F;
 
         [SerializeField]
-        private float _rotateSpeed = 400;
+        private float _rotateSpeed = 400F;
 
         [SerializeField]
-        private float _limitAngleTop = 30;
+        private float _limitAngleTop = 30F;
 
         [SerializeField]
-        private float _limitAngleBottom = 60;
+        private float _limitAngleBottom = 60F;
 
         [Header("Parts")]
 
@@ -45,6 +46,8 @@ namespace FirstTrainingProject
 
         #region Private Fields
 
+        private bool _isGame = false;
+
         private bool _isRun = false;
         private float _runAcceleration = 2F;
 
@@ -52,7 +55,7 @@ namespace FirstTrainingProject
         private float _enduranceMin = 0F;
         private float _enduranceMax = 1F;
         private float _enduranceFlowRate = 0.5F;
-        private float _enduranceRecoveryRate = 0.15F;
+        private float _enduranceRecoveryRate = 0.1F;
 
         #endregion
 
@@ -95,6 +98,10 @@ namespace FirstTrainingProject
             _applicationManager.ApplicationGameInited += PlayerInitApplication; // m.b remove
             _applicationManager.ApplicationGamePaused += GetCurrentPosition;
             //_applicationManager.ApplicationGameEnded += GetCurrentPosition;
+            _applicationManager.ApplicationGameStarted += GameStart;
+            _applicationManager.ApplicationGamePaused += GamePause;
+            _applicationManager.ApplicationGameContinued += GameContinue;
+            _applicationManager.ApplicationGameEnded += GameStop;
         }
 
         private void OnDestroy()
@@ -102,6 +109,10 @@ namespace FirstTrainingProject
             _applicationManager.ApplicationGameInited -= PlayerInitApplication; // m.b remove
             _applicationManager.ApplicationGamePaused -= GetCurrentPosition;
             //_applicationManager.ApplicationGameEnded -= GetCurrentPosition;
+            _applicationManager.ApplicationGameStarted -= GameStart;
+            _applicationManager.ApplicationGamePaused -= GamePause;
+            _applicationManager.ApplicationGameContinued -= GameContinue;
+            _applicationManager.ApplicationGameEnded -= GameStop;
         }
 
         private void Update()
@@ -114,25 +125,28 @@ namespace FirstTrainingProject
             {
                 _isRun = false;
             }
-            if (_isRun)
+            if (_isGame)
             {
-                _endurance -= _enduranceFlowRate * Time.deltaTime;
-                if (_endurance <= _enduranceMin)
+                if (_isRun)
                 {
-                    _isRun = false;
-                    _endurance = _enduranceMin;
+                    _endurance -= _enduranceFlowRate * Time.deltaTime;
+                    if (_endurance <= _enduranceMin)
+                    {
+                        _isRun = false;
+                        _endurance = _enduranceMin;
+                    }
                 }
-            }
-            else
-            {
-                _endurance += _enduranceRecoveryRate * Time.deltaTime;
-                if (_endurance >= _enduranceMax)
+                else
                 {
-                    _endurance = _enduranceMax;
+                    _endurance += _enduranceRecoveryRate * Time.deltaTime;
+                    if (_endurance >= _enduranceMax)
+                    {
+                        _endurance = _enduranceMax;
+                    }
                 }
+                EnduranceChanged?.Invoke(_endurance);
             }
-            EnduranceChanged?.Invoke(_endurance);
-            var acceleration = _isRun ? _runAcceleration : 1F;
+            var acceleration = _isRun && Input.GetAxis("Vertical") > 0 ? _runAcceleration : 1F;
 
             transform.Translate(Vector3.forward * Input.GetAxis("Vertical") * _movementSpeed * Time.deltaTime * acceleration);
             transform.Translate(Vector3.right * Input.GetAxis("Horizontal") * _movementSpeed * Time.deltaTime);
@@ -149,6 +163,31 @@ namespace FirstTrainingProject
                 currentAngles.x = _limitAngleBottom;
             }
             _head.transform.localEulerAngles = currentAngles;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void GameStart()
+        {
+            _isGame = true;
+            _endurance = _enduranceMin;
+        }
+
+        private void GamePause()
+        {
+            _isGame = false;
+        }
+
+        private void GameContinue()
+        {
+            _isGame = true;
+        }
+
+        private void GameStop(bool isWin)
+        {
+            _isGame = false;
         }
 
         #endregion
