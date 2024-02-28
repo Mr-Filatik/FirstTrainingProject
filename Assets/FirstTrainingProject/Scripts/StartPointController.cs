@@ -9,6 +9,8 @@ namespace FirstTrainingProject
     {
         #region Serialize Fields
 
+        [Header("Main")]
+
         [SerializeField]
         private ApplicationManager _applicationManager;
 
@@ -20,16 +22,20 @@ namespace FirstTrainingProject
 
         #endregion
 
-        #region Public Medhods
+        #region Unity Medhods
 
-        public void GameStart()
+        private void Awake()
         {
-            _isGame = true;
+            if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
+
+            _applicationManager.ApplicationGameStarted += GameStart;
+            _applicationManager.ApplicationGameEnded += GameEnd;
         }
 
-        public void GameEnd(bool isWin)
+        private void OnDestroy()
         {
-            _isGame = false;
+            _applicationManager.ApplicationGameStarted -= GameStart;
+            _applicationManager.ApplicationGameEnded -= GameEnd;
         }
 
         #endregion
@@ -48,26 +54,22 @@ namespace FirstTrainingProject
                 {
                     _applicationManager.ApplicationGameStart();
                 }
-                
+
             }
         }
 
         #endregion
 
-        #region Unity Medhods
+        #region Private Methods
 
-        private void Awake()
+        private void GameStart()
         {
-            if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
-
-            _applicationManager.ApplicationGameStarted += GameStart;
-            _applicationManager.ApplicationGameEnded += GameEnd;
+            _isGame = true;
         }
 
-        private void OnDestroy()
+        private void GameEnd(bool isWin)
         {
-            _applicationManager.ApplicationGameStarted -= GameStart;
-            _applicationManager.ApplicationGameEnded -= GameEnd;
+            _isGame = false;
         }
 
         #endregion

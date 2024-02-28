@@ -11,10 +11,12 @@ namespace FirstTrainingProject
     {
         #region Serialize Fields
 
-        [Header("Parts")]
+        [Header("Main")]
 
         [SerializeField]
         private ApplicationManager _applicationManager;
+
+        [Header("Agents")]
 
         [SerializeField]
         private NavMeshAgent _agent;
@@ -22,10 +24,10 @@ namespace FirstTrainingProject
         [Header("Values")]
 
         [SerializeField]
-        private float _movementSpeed; // 1.5
+        private float _movementSpeed = 1.5F;
 
         [SerializeField]
-        private float _rotateSpeed; // 400
+        private float _rotateSpeed = 400F;
 
         #endregion
 
@@ -46,22 +48,6 @@ namespace FirstTrainingProject
         public void SetTarget(Transform target)
         {
             _target = target;
-        }
-
-        public void GamePause()
-        {
-            _agent.enabled = false;
-        }
-
-        public void GameContinue()
-        {
-            _agent.enabled = true;
-        }
-
-        public void GameEnd(bool isWin)
-        {
-            _agent.enabled = false;
-            SetPosition(Vector3.zero, Vector3.zero);
         }
 
         #endregion
@@ -93,8 +79,29 @@ namespace FirstTrainingProject
         {
             if (_agent.enabled)
             {
+                //!don't take every frame
                 _agent?.SetDestination(_target.position); // SetDestination in update or not
             }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void GamePause()
+        {
+            _agent.enabled = false;
+        }
+
+        private void GameContinue()
+        {
+            _agent.enabled = true;
+        }
+
+        private void GameEnd(bool isWin)
+        {
+            _agent.enabled = false;
+            SetPosition(Vector3.zero, Vector3.zero);
         }
 
         #endregion

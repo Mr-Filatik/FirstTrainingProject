@@ -6,11 +6,21 @@ namespace FirstTrainingProject
 {
     public class EndPointController : MonoBehaviour
     {
+        #region Serialize Fields
+
+        [Header("Main")]
+
         [SerializeField]
         private ApplicationManager _applicationManager;
 
+        [Header("Values")]
+
         [SerializeField]
         private bool _isWin = false;
+
+        #endregion
+
+        #region Special Medhods
 
         private void OnTriggerEnter(Collider other)
         {
@@ -19,5 +29,7 @@ namespace FirstTrainingProject
                 _applicationManager.ApplicationGameEnd(_isWin);
             }
         }
+
+        #endregion
     }
 }

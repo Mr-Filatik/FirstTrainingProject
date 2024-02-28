@@ -11,9 +11,7 @@ namespace FirstTrainingProject
         [Header("Values")]
 
         [SerializeField]
-        private float _cellSize; //2
-
-        [Header("Enviroment prefabs")]
+        private float _cellSize = 2F;
 
         [Header("Cell prefabs")]
 

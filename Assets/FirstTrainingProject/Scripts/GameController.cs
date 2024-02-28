@@ -11,9 +11,13 @@ namespace FirstTrainingProject
     {
         #region Serialize Fields
 
+        [Header("Main")]
+
         [SerializeField]
         private ApplicationManager _applicationManager;
-        
+
+        [Header("Elements")]
+
         [SerializeField]
         private GameObject _spawnPlaceMenu;
 
@@ -37,80 +41,15 @@ namespace FirstTrainingProject
 
         #endregion
 
+        #region Public Methods
+
         public void SetNewSpawnPlaceInLevel(Vector3 position, Vector3 rotation)
         {
             _spawnPositionInLevel = position;
             _spawnRotateInLevel = rotation;
         }
 
-        //public void GameInit()
-        //{
-        //    _applicationManager.PlayerController.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
-        //}
-
-        public void GameStart()
-        {
-            _isPause = false;
-
-            _applicationManager.PlayerController.SetPosition(_spawnPositionInLevel, _spawnRotateInLevel);
-
-            _time = DateTime.MinValue;
-            _timeTmp = DateTime.Now;
-        }
-
-        public void GamePause()
-        {
-            _isPause = true;
-
-            _applicationManager.PlayerController.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
-
-            DateTime now = DateTime.Now;
-            var delta = now.AddHours(-_timeTmp.Hour).AddMinutes(-_timeTmp.Minute).AddSeconds(-_timeTmp.Second);
-            _time = _time.AddHours(delta.Hour).AddMinutes(delta.Minute).AddSeconds(delta.Second);
-        }
-
-        public void GameContinue()
-        {
-            _isPause = false;
-
-            _applicationManager.PlayerController.SetPosition(_spawnPositionInLevel, _spawnRotateInLevel);
-
-            _timeTmp = DateTime.Now;
-        }
-
-        public void GameEnd(bool isWin)
-        {
-            _isPause = true;
-
-            _applicationManager.PlayerController.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
-
-            _applicationManager.ApplicationGameInit();
-
-            DateTime now = DateTime.Now;
-            var delta = now.AddHours(-_timeTmp.Hour).AddMinutes(-_timeTmp.Minute).AddSeconds(-_timeTmp.Second);
-            _time = _time.AddHours(delta.Hour).AddMinutes(delta.Minute).AddSeconds(delta.Second);
-
-            if (isWin)
-            {
-                if (_bestTime > _time)
-                {
-                    _bestTime = _time;
-                }
-
-                _countWin++;
-                SetDataOnScreen(true);
-            }
-            else
-            {
-                _countLose++;
-                SetDataOnScreen(false);
-            }
-        }
-
-        private void SetDataOnScreen(bool isWin)
-        {
-            _screen.text = $"This room is the game's menu.\r\nTo start the game, go to the green zone.\r\nPress Space to hide/show the cursor.\r\nPress Escape to exit here (to the menu).\r\n\r\nMap already created, passed {_countWin + _countLose} times.\r\nTime spent {_time.Minute} m. {_time.Second} s. (Best time {_bestTime.Minute} m. {_bestTime.Second} s.).\r\n{(isWin ? "Yep :) !YOU IS WIN! (: peY" : "Sorry :( !YOU IS DEAD! ): yrroS")}\r\nCount win {_countWin}, count lose {_countLose}.";
-        }
+        #endregion
 
         #region Unity Medhods
 
@@ -163,6 +102,79 @@ namespace FirstTrainingProject
                 Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
                 Debug.Log($"Cursor {Cursor.lockState}.");
             }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        //private void GameInit()
+        //{
+        //    _applicationManager.PlayerController.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
+        //}
+
+        private void GameStart()
+        {
+            _isPause = false;
+
+            _applicationManager.PlayerController.SetPosition(_spawnPositionInLevel, _spawnRotateInLevel);
+
+            _time = DateTime.MinValue;
+            _timeTmp = DateTime.Now;
+        }
+
+        private void GamePause()
+        {
+            _isPause = true;
+
+            _applicationManager.PlayerController.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
+
+            DateTime now = DateTime.Now;
+            var delta = now.AddHours(-_timeTmp.Hour).AddMinutes(-_timeTmp.Minute).AddSeconds(-_timeTmp.Second);
+            _time = _time.AddHours(delta.Hour).AddMinutes(delta.Minute).AddSeconds(delta.Second);
+        }
+
+        private void GameContinue()
+        {
+            _isPause = false;
+
+            _applicationManager.PlayerController.SetPosition(_spawnPositionInLevel, _spawnRotateInLevel);
+
+            _timeTmp = DateTime.Now;
+        }
+
+        private void GameEnd(bool isWin)
+        {
+            _isPause = true;
+
+            _applicationManager.PlayerController.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
+
+            _applicationManager.ApplicationGameInit();
+
+            DateTime now = DateTime.Now;
+            var delta = now.AddHours(-_timeTmp.Hour).AddMinutes(-_timeTmp.Minute).AddSeconds(-_timeTmp.Second);
+            _time = _time.AddHours(delta.Hour).AddMinutes(delta.Minute).AddSeconds(delta.Second);
+
+            if (isWin)
+            {
+                if (_bestTime > _time)
+                {
+                    _bestTime = _time;
+                }
+
+                _countWin++;
+                SetDataOnScreen(true);
+            }
+            else
+            {
+                _countLose++;
+                SetDataOnScreen(false);
+            }
+        }
+
+        private void SetDataOnScreen(bool isWin)
+        {
+            _screen.text = $"This room is the game's menu.\r\nTo start the game, go to the green zone.\r\nPress Space to hide/show the cursor.\r\nPress Escape to exit here (to the menu).\r\n\r\nMap already created, passed {_countWin + _countLose} times.\r\nTime spent {_time.Minute} m. {_time.Second} s. (Best time {_bestTime.Minute} m. {_bestTime.Second} s.).\r\n{(isWin ? "Yep :) !YOU IS WIN! (: peY" : "Sorry :( !YOU IS DEAD! ): yrroS")}\r\nCount win {_countWin}, count lose {_countLose}.";
         }
 
         #endregion

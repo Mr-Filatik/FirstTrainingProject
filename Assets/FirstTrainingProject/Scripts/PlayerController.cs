@@ -59,29 +59,12 @@ namespace FirstTrainingProject
 
         #endregion
 
-        #region Public Properties
-
-
-
-        #endregion
-
         #region Public Methods
 
         public void SetPosition(Vector3 position, Vector3 rotation)
         {
             gameObject.transform.position = position;
             gameObject.transform.eulerAngles = rotation;
-        }
-
-        public void GetCurrentPosition()
-        {
-            _applicationManager.GameController.SetNewSpawnPlaceInLevel(gameObject.transform.position, gameObject.transform.eulerAngles);
-        }
-
-        public void PlayerInitApplication()
-        {
-            gameObject.transform.eulerAngles = Vector3.zero;
-            _head.transform.eulerAngles = Vector3.zero;
         }
 
         #endregion
@@ -168,6 +151,17 @@ namespace FirstTrainingProject
         #endregion
 
         #region Private Methods
+
+        private void PlayerInitApplication()
+        {
+            gameObject.transform.eulerAngles = Vector3.zero;
+            _head.transform.eulerAngles = Vector3.zero;
+        }
+
+        private void GetCurrentPosition()
+        {
+            _applicationManager.GameController.SetNewSpawnPlaceInLevel(gameObject.transform.position, gameObject.transform.eulerAngles);
+        }
 
         private void GameStart()
         {

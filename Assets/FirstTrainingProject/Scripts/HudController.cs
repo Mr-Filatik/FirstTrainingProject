@@ -81,10 +81,6 @@ public class HudController : MonoBehaviour
 
     private void ChangeStaminaBar(float value)
     {
-        //if (_rectTransform == null)
-        //{
-        //    _rectTransform = _staminaBar.transform as RectTransform;
-        //}
         _rectTransform.localScale = new Vector3(value, 1.0f, 1.0f);
     }
 
