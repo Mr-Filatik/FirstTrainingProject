@@ -42,7 +42,7 @@ namespace FirstTrainingProject
 
         public GameController GameController { get; set; } = null;
 
-        public MapController MapController { get; set; } = null;
+        public OldMapController MapController { get; set; } = null;
 
         public PlayerController PlayerController { get; set; } = null;
 
