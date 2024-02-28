@@ -9,6 +9,23 @@ namespace FirstTrainingProject
 
     }
 
+    public class CellPoint
+    {
+        public int PosH;
+        public int PosW;
+    }
+
+    public class CellPointWithDirection : CellPoint
+    {
+        public MapController.CellDirection Direction;
+    }
+
+    public class RoomPoint : CellPoint
+    {
+        public int SizeH;
+        public int SizeW;
+    }
+
     public enum DirectionForInstance // Rotation amount
     {
         Left = 0, // Zero PI
