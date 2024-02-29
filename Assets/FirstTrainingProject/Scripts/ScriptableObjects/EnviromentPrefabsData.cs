@@ -48,7 +48,23 @@ namespace FirstTrainingProject
         [SerializeField]
         private GameObject _crossCellWithoutFourPillars;
 
+        [Header("Room prefabs")]
+
+        [SerializeField]
+        private GameObject _room1x1;
+        [SerializeField]
+        private GameObject _room2x2Left;
+        [SerializeField]
+        private GameObject _room2x2Right;
+        [SerializeField]
+        private GameObject _room3x2Left;
+        [SerializeField]
+        private GameObject _room3x2Center;
+        [SerializeField]
+        private GameObject _room3x2Right;
+
         [Header("Other prefabs")]
+
         [SerializeField]
         private GameObject _floor;
 
@@ -163,6 +179,18 @@ namespace FirstTrainingProject
         /// </summary>
         /// /// <remarks> Пол </remarks>
         public GameObject Floor => _floor;
+
+        public GameObject Room1x1 => _room1x1;
+
+        public GameObject Room2x2Left => _room2x2Left;
+
+        public GameObject Room2x2Right => _room2x2Right;
+
+        public GameObject Room3x2Left => _room3x2Left;
+
+        public GameObject Room3x2Center => _room3x2Center;
+
+        public GameObject Room3x2Right => _room3x2Right;
 
         #endregion
     }

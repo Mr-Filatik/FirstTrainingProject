@@ -2363,7 +2363,7 @@ MonoBehaviour:
   _applicationManager: {fileID: 11400000, guid: e91eb72b35418ce4db8a64a1093a59d8, type: 2}
   _parentForEviroment: {fileID: 1132637255}
   _enviromentPrefabsData: {fileID: 11400000, guid: 8d913203e951f5b40a41d2cae03066d5, type: 2}
-  _navMeshSurface: {fileID: 0}
+  _navMeshSurface: {fileID: 253443345}
 --- !u!1 &1081198769
 GameObject:
   m_ObjectHideFlags: 0

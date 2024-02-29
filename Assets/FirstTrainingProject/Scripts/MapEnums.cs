@@ -1,12 +1,103 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static MapController;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace FirstTrainingProject
 {
     public class MapEnums
     {
 
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// Example (1 - cell, 0 - wall, _ - not used): <br/>
+    /// _ 0 _ 0 _ 0 _ 0 _ 0 _ <br/>
+    /// 0 1 0 1 0 1 0 1 0 1 0 <br/>
+    /// _ 0 _ 0 _ 0 _ 0 _ 0 _ <br/>
+    /// 0 1 0 1 0 1 0 1 0 1 0 <br/>
+    /// _ 0 _ 0 _ 0 _ 0 _ 0 _ <br/>
+    /// 0 1 0 1 0 1 0 1 0 1 0 <br/>
+    /// _ 0 _ 0 _ 0 _ 0 _ 0 _ <br/>
+    /// 0 1 0 1 0 1 0 1 0 1 0 <br/>
+    /// _ 0 _ 0 _ 0 _ 0 _ 0 _ <br/>
+    /// 0 1 0 1 0 1 0 1 0 1 0 <br/>
+    /// _ 0 _ 0 _ 0 _ 0 _ 0 _ <br/>
+    /// </remarks>
+    public class MapType
+    {
+        public int[,] Map { get; set; }
+        public int Height => Map.GetLength(0);
+        public int Width => Map.GetLength(1);
+        public CellPointWithDirection StartPoint { get; set; }
+        public CellPointWithDirection EndPoint { get; set; }
+        public List<RoomPoint> InternalRooms { get; set; }
+
+        public static int MinHeight => 11;
+        public static int MinWidth => 11;
+
+        public MapType(int hIndex, int wIndex)
+        {
+            Map = new int[hIndex, wIndex];
+
+            for (int h = 0; h < Height; h++)
+            {
+                for (int w = 0; w < Width; w++)
+                {
+                    Map[h, w] = (int)CellType.Empty;
+                }
+            }
+            StartPoint = new CellPointWithDirection() { PosH = 1, PosW = 1, Direction = CellDirection.Right };
+            Map[StartPoint.PosH, StartPoint.PosW] = (int)CellType.Start;
+            EndPoint = new CellPointWithDirection() { PosH = Height - 2, PosW = Width - 2, Direction = CellDirection.Left };
+            Map[EndPoint.PosH, EndPoint.PosW] = (int)CellType.End;
+            InternalRooms = new List<RoomPoint>();
+        }
+
+        public int this[int hIndex, int wIndex]
+        {
+            get => Map[hIndex, wIndex];
+            set => Map[hIndex, wIndex] = value;
+        }
+
+        //add clear point condition
+        public bool CellInMap(CellPointWithDirection cell)
+        {
+            if (cell.Direction == MapController.CellDirection.Left)
+            {
+                return CellInMap((CellPoint)cell) && CellInMap(cell.PosH, cell.PosW - 2);
+            }
+            if (cell.Direction == MapController.CellDirection.Top)
+            {
+                return CellInMap((CellPoint)cell) && CellInMap(cell.PosH + 2, cell.PosW);
+            }
+            if (cell.Direction == MapController.CellDirection.Right)
+            {
+                return CellInMap((CellPoint)cell) && CellInMap(cell.PosH, cell.PosW + 2);
+            }
+            if (cell.Direction == MapController.CellDirection.Bottom)
+            {
+                return CellInMap((CellPoint)cell) && CellInMap(cell.PosH - 2, cell.PosW);
+            }
+            return false;
+        }
+
+        //add clear point condition
+        public bool CellInMap(CellPoint cell)
+        {
+            return CellInMap(cell.PosH, cell.PosW);
+        }
+
+        //add clear point condition
+        public bool CellInMap(int posH, int posW)
+        {
+            return posH % 2 == 1 && posW % 2 == 1 && posH > 0 && posH < Height && posW > 0 && posW < Width;
+        }
     }
 
     public class CellPoint
@@ -22,10 +113,25 @@ namespace FirstTrainingProject
 
     public class RoomPoint : CellPoint
     {
-        public int SizeH;
-        public int SizeW;
+        private int _sizeH;
+        private int _sizeW;
+        /// <summary>
+        /// 1, 2, 3... cells
+        /// </summary>
+        public int SizeH { get { return (_sizeH - 1) * 2; } set { _sizeH = value; } }
+        /// <summary>
+        /// 1, 2, 3... cells
+        /// </summary>
+        public int SizeW { get { return (_sizeW - 1) * 2; } set { _sizeW = value; } }
+
+        public MapController.CellDirection DoorDirection { get; set; }
+        /// <summary>
+        /// Clockwise distance
+        /// </summary>
+        public int DoorDistance { get; set; }
     }
 
+    [Obsolete]
     public enum DirectionForInstance // Rotation amount
     {
         Left = 0, // Zero PI
@@ -34,6 +140,7 @@ namespace FirstTrainingProject
         Down = 270 // Three quarters PI
     }
 
+    [Obsolete]
     public enum DirectionForRemovePillars // Удаление столбов на карте
     {
         LeftUp,
@@ -42,7 +149,7 @@ namespace FirstTrainingProject
         DownLeft
     }
 
-    //
+    [Obsolete]
     public enum PointForCreateMaze
     {
         /// <summary>
@@ -63,6 +170,7 @@ namespace FirstTrainingProject
     /// Direction for a dead-end cell
     /// </summary>
     /// <remarks> Направление для тупиковой ячейки </remarks>
+    [Obsolete]
     public enum BlindAlleyDirection
     {
         /// <summary>
@@ -87,6 +195,7 @@ namespace FirstTrainingProject
     /// Direction for straight cell
     /// </summary>
     /// <remarks> Направление для прямой ячейки </remarks>
+    [Obsolete]
     public enum StraightDirection
     {
         /// <summary>
@@ -103,6 +212,7 @@ namespace FirstTrainingProject
     /// Direction for corner cell
     /// </summary>
     /// <remarks> Направление для угловой ячейки </remarks>
+    [Obsolete]
     public enum AngleDirection
     {
         /// <summary>
@@ -143,6 +253,7 @@ namespace FirstTrainingProject
     /// Direction for branch cell
     /// </summary>
     /// <remarks> Направление для ветвистой ячейки </remarks>
+    [Obsolete]
     public enum BranchDirection
     {
         LeftBetweenUpAndDown = 31,
@@ -167,6 +278,7 @@ namespace FirstTrainingProject
     /// Direction for crossing cell
     /// </summary>
     /// <remarks> Направление для ячейки пересечения </remarks>
+    [Obsolete]
     public enum CrossingDirection
     {
         AllSides = 41,

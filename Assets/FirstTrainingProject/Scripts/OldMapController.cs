@@ -710,7 +710,7 @@ namespace FirstTrainingProject
                         coordinates += new Vector3(0F, 0.001F, 0F);
                         var angle = new Vector3(0F, (float)DirectionForInstance.Up, 0F); //need change
 
-                        _applicationManager.GameController?.SetNewSpawnPlaceInLevel(coordinates, angle);
+                        //_applicationManager.GameController?.SetNewSpawnPlaceInLevel(coordinates, angle);
 
                         //if (am != null)
                         //{
@@ -726,8 +726,8 @@ namespace FirstTrainingProject
                         var angle = new Vector3(0F, (float)DirectionForInstance.Down, 0F); //need change
 
                         //_applicationManager.GameController?.SetNewSpawnPlaceInLevelEnemy(coordinates, angle);
-                        _applicationManager.EnemyController?.SetPosition(coordinates, angle);
-                        _applicationManager.EnemyController?.SetTarget(_applicationManager.PlayerController.transform);
+                        //_applicationManager.EnemyController?.SetPosition(coordinates, angle);
+                        //_applicationManager.EnemyController?.SetTarget(_applicationManager.PlayerController.transform);
                     }
                     //if (map[i, j] == 7)
                     //{

@@ -29,4 +29,10 @@ MonoBehaviour:
   _crossCellWithoutTwoNotNeighbourPillars: {fileID: 5017508057819336783, guid: 02dde28f79bd0da49999f094a6ea597a, type: 3}
   _crossCellWithoutThreePillars: {fileID: 8554178012629335106, guid: fb2ffccc42cf1f542a56b45d26bee388, type: 3}
   _crossCellWithoutFourPillars: {fileID: 1212538509459770793, guid: 460d1bc5557882e49959a4d90fb19600, type: 3}
+  _room1x1: {fileID: 7459631525822181401, guid: 04ede5e3a231dda4596ef7ea46577dd9, type: 3}
+  _room2x2Left: {fileID: 4473014814817748187, guid: 75ab899d573a9cd46b7d367781a3f81d, type: 3}
+  _room2x2Right: {fileID: 0}
+  _room3x2Left: {fileID: 0}
+  _room3x2Center: {fileID: 86022240326365238, guid: 44d038faed76288428c2a60897783e9e, type: 3}
+  _room3x2Right: {fileID: 0}
   _floor: {fileID: 8829975683494990689, guid: e4ade8b4e96c24d4f956e35712fac210, type: 3}

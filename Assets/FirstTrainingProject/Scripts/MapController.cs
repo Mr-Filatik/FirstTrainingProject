@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Unity.AI.Navigation;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using static MapController;
 
 public class MapController : MonoBehaviour
 {
@@ -34,14 +36,8 @@ public class MapController : MonoBehaviour
 
     #region Private Fields
 
-    private int[,] _map = new int[15, 21];
-    private int _height = 15;
-    private int _width = 21;
-    private readonly CellPoint _startPoint = new CellPoint() { PosH = 1, PosW = 1 };
-    private readonly CellPointWithDirection _startPointDir = new CellPointWithDirection() { PosH = 1, PosW = 1, Direction = CellDirection.Right };
-    private readonly CellPoint _endPoint = new CellPoint() { PosH = 13, PosW = 19 };
-    private readonly CellPointWithDirection _endPointDir = new CellPointWithDirection() { PosH = 13, PosW = 19, Direction = CellDirection.Left };
-    //private readonly CellPoint[] 
+    private MapType Map = new MapType(19, 27);
+    private MapType MapAdditional = new MapType(19, 27);
 
     #endregion
 
@@ -49,70 +45,64 @@ public class MapController : MonoBehaviour
 
     public void SetMapSize(int height, int width)
     {
-        if (height > 6 && width > 6 && height % 2 == 1 && width % 2 == 1)
+        if (height >= MapType.MinHeight && width > MapType.MinWidth && height % 2 == 1 && width % 2 == 1)
         {
-            _height = height;
-            _width = width;
-
-            _startPoint.PosH = 1;
-            _startPoint.PosW = 1;
-
-            _endPoint.PosH = height - 1;
-            _endPoint.PosW = width - 1;
-
-            _map = new int[_height, _width];
-            for (int h = 0; h < _map.GetLength(0); h++)
-            {
-                for (int w = 0; w < _map.GetLength(1); w++)
-                {
-                    _map[h, w] = (int)CellType.Empty;
-                }
-            }
-            _map[_startPoint.PosH, _startPoint.PosW] = (int)CellType.Start;
-            _map[_endPoint.PosH, _endPoint.PosW] = (int)CellType.End;
+            Map = new MapType(height, width);
         }
     }
 
     public void SetStartPointPosition(int posH, int posW)
     {
-        if (posH > 0 && posH < _height && posW > 0 && posW < _width && posH % 2 == 1 && posW % 2 == 1)
+        if (Map.CellInMap(posH, posW) && posH != Map.EndPoint.PosH && posW != Map.EndPoint.PosW)
         {
-            if (posH != _endPoint.PosH && posW != _endPoint.PosW)
-            {
-                _map[_startPoint.PosH, _startPoint.PosW] = (int)CellType.Empty;
-                _startPoint.PosH = posH;
-                _startPoint.PosW = posW;
-                _map[_startPoint.PosH, _startPoint.PosW] = (int)CellType.Start;
-            }
+            Map[Map.StartPoint.PosH, Map.StartPoint.PosW] = (int)CellType.Empty;
+            Map.StartPoint.PosH = posH;
+            Map.StartPoint.PosW = posW;
+            Map[Map.StartPoint.PosH, Map.StartPoint.PosW] = (int)CellType.Start;
         }
     }
 
     public void SetEndPointPosition(int posH, int posW)
     {
-        if (posH > 0 && posH < _height && posW > 0 && posW < _width && posH % 2 == 1 && posW % 2 == 1)
+        if (Map.CellInMap(posH, posW) && posH != Map.StartPoint.PosH && posW != Map.StartPoint.PosW)
         {
-            if (posH != _startPoint.PosH && posW != _startPoint.PosW)
-            {
-                _map[_endPoint.PosH, _endPoint.PosW] = (int)CellType.Empty;
-                _endPoint.PosH = posH;
-                _endPoint.PosW = posW;
-                _map[_endPoint.PosH, _endPoint.PosW] = (int)CellType.End;
-            }
+            Map[Map.EndPoint.PosH, Map.EndPoint.PosW] = (int)CellType.Empty;
+            Map.EndPoint.PosH = posH;
+            Map.EndPoint.PosW = posW;
+            Map[Map.EndPoint.PosH, Map.EndPoint.PosW] = (int)CellType.End;
         }
     }
 
-    public void SetRooms(params RoomPoint[] rooms)
+    public void SetInternalRooms(MapType map, params RoomPoint[] rooms)
     {
         foreach (RoomPoint room in rooms)
         {
-            if (room.PosH > 0 && room.PosH < _height && room.PosW > 0 && room.PosW < _width && room.PosH % 2 == 1 && room.PosW % 2 == 1)
+            if (map.CellInMap(room.PosH, room.PosW) && map.CellInMap(room.PosH + room.SizeH, room.PosW + room.SizeW))
             {
-                if (room.SizeH % 2 == 0 && room.SizeW % 2 == 0)
+                map.InternalRooms.Add(room);
+                //change for SizeH and SizeW logic
+                for (int h = room.PosH; h <= room.PosH + room.SizeH; h++)
                 {
-                    //if ()
-                    //{
-
-                    //}
+                    for (int w = room.PosW; w <= room.PosW + room.SizeW; w++)
+                    {
+                        map[h, w] = (int)CellType.Room;
+                    }
+                }
+                if (room.DoorDirection == CellDirection.Left)
+                {
+                    map[room.PosH + room.DoorDistance * 2, room.PosW - 1] = (int)CellType.Marked;
+                }
+                if (room.DoorDirection == CellDirection.Top)
+                {
+                    map[room.PosH + room.SizeH + 1, room.PosW + room.DoorDistance * 2] = (int)CellType.Marked;
+                }
+                if (room.DoorDirection == CellDirection.Right)
+                {
+                    map[room.PosH + room.SizeH - room.DoorDistance * 2, room.PosW + room.SizeW + 1] = (int)CellType.Marked;
+                }
+                if (room.DoorDirection == CellDirection.Bottom)
+                {
+                    map[room.PosH - 1, room.PosW + room.SizeW - room.DoorDistance * 2] = (int)CellType.Marked;
                 }
             }
         }
@@ -120,96 +110,153 @@ public class MapController : MonoBehaviour
 
     public void CreateMap()
     {
-        List<CellPoint> points = new List<CellPoint>();
+        Map = new MapType(19, 27);
+        MapAdditional = new MapType(19, 27);
 
-        _map[_startPoint.PosH, _startPoint.PosW] = (int)CellType.Marked;
-        points.Add(_startPoint);
-        var newPoint = new CellPoint();
-        if (_startPointDir.Direction == CellDirection.Left)
+        var oneRoom = new RoomPoint()
         {
-            newPoint.PosH = _startPoint.PosH;
-            newPoint.PosW = _startPoint.PosW - 2;
-        }
-        if (_startPointDir.Direction == CellDirection.Top)
-        {
-            newPoint.PosH = _startPoint.PosH + 2;
-            newPoint.PosW = _startPoint.PosW;
-        }
-        if (_startPointDir.Direction == CellDirection.Right)
-        {
-            newPoint.PosH = _startPoint.PosH;
-            newPoint.PosW = _startPoint.PosW + 2;
-        }
-        if (_startPointDir.Direction == CellDirection.Bottom)
-        {
-            newPoint.PosH = _startPoint.PosH - 2;
-            newPoint.PosW = _startPoint.PosW;
-        }
-        CreationPath(points[^1], newPoint);
-        points.Add(newPoint);
+            PosH = 7,
+            PosW = 7,
+            SizeH = 3,
+            SizeW = 2,
+            DoorDirection = CellDirection.Left,
+            DoorDistance = 1
+        };
+        SetInternalRooms(Map, oneRoom);
+        SetInternalRooms(MapAdditional, oneRoom);
 
-        newPoint = new CellPoint();
-        if (_endPointDir.Direction == CellDirection.Left)
+        var twoRoom = new RoomPoint()
         {
-            newPoint.PosH = _endPoint.PosH;
-            newPoint.PosW = _endPoint.PosW - 2;
-        }
-        if (_endPointDir.Direction == CellDirection.Top)
-        {
-            newPoint.PosH = _endPoint.PosH + 2;
-            newPoint.PosW = _endPoint.PosW;
-        }
-        if (_endPointDir.Direction == CellDirection.Right)
-        {
-            newPoint.PosH = _endPoint.PosH;
-            newPoint.PosW = _endPoint.PosW + 2;
-        }
-        if (_endPointDir.Direction == CellDirection.Bottom)
-        {
-            newPoint.PosH = _endPoint.PosH - 2;
-            newPoint.PosW = _endPoint.PosW;
-        }
-        CreationPath(newPoint, _endPoint);
+            PosH = 11,
+            PosW = 15,
+            SizeH = 1,
+            SizeW = 1,
+            DoorDirection = CellDirection.Top,
+            DoorDistance = 0
+        };
+        SetInternalRooms(Map, twoRoom);
+        SetInternalRooms(MapAdditional, twoRoom);
 
-        while (points.Any())
+        var threeRoom = new RoomPoint()
         {
-            var availableNeighbors = FindAvailableNeighbors(points[^1]);
-            var selectedNeighbors = SelectAvailableNeighbors(availableNeighbors);
-            if (selectedNeighbors != null)
-            {
-                CreationPath(points[^1], selectedNeighbors);
-                points.Add(selectedNeighbors);
-            }
-            else
-            {
-                points.RemoveAt(points.Count - 1);
-            }
-        }
+            PosH = 3,
+            PosW = 19,
+            SizeH = 2,
+            SizeW = 2,
+            DoorDirection = CellDirection.Bottom,
+            DoorDistance = 0
+        };
+        SetInternalRooms(Map, threeRoom);
+        SetInternalRooms(MapAdditional, threeRoom);
+
+        AddingMaze(Map);
+
+        AddingMaze(MapAdditional);
+
+        MergedMaps(Map, MapAdditional, 0.33F);
 
         //Info();
 
         CellTypeDefinition();
 
+        ClearEnvironments();
+
         DrawMapCells();
+
+        DrawMapInternalRooms();
+
+        _navMeshSurface.BuildNavMesh();
+
+
+
+        void AddingMaze(MapType map)
+        {
+            List<CellPoint> points = new List<CellPoint>();
+
+            map[map.StartPoint.PosH, map.StartPoint.PosW] = (int)CellType.Marked;
+
+            points.Add(map.StartPoint);
+            var newPoint = GetNextCell(map.StartPoint);
+            CreationPath(points[^1], newPoint, map);
+            points.Add(newPoint);
+
+            newPoint = GetNextCell(map.EndPoint);
+            CreationPath(newPoint, map.EndPoint, map);
+
+            while (points.Any())
+            {
+                var availableNeighbors = FindAvailableNeighbors(points[^1], map);
+                var selectedNeighbors = SelectAvailableNeighbors(availableNeighbors);
+                if (selectedNeighbors != null)
+                {
+                    CreationPath(points[^1], selectedNeighbors, map);
+                    points.Add(selectedNeighbors);
+                }
+                else
+                {
+                    points.RemoveAt(points.Count - 1);
+                }
+            }
+        }
+
+        void MergedMaps(MapType map, MapType addMap, float percent)
+        {
+            for (int h = 0; h < map.Height; h++)
+            {
+                for (int w = h % 2 == 0 ? 1 : 0; w < map.Width - 1; w += 2)
+                {
+                    if (addMap[h, w] == (int)CellType.Marked && map[h, w] == (int)CellType.Empty && Random.Range(0, (int)(1 / percent)) == 0)
+                    {
+                        map[h, w] = addMap[h, w];
+                    }
+                }
+            }
+        }
+
+        CellPoint GetNextCell(CellPointWithDirection cell)
+        {
+            var newPoint = new CellPoint();
+            if (cell.Direction == CellDirection.Left)
+            {
+                newPoint.PosH = cell.PosH;
+                newPoint.PosW = cell.PosW - 2;
+            }
+            if (cell.Direction == CellDirection.Top)
+            {
+                newPoint.PosH = cell.PosH + 2;
+                newPoint.PosW = cell.PosW;
+            }
+            if (cell.Direction == CellDirection.Right)
+            {
+                newPoint.PosH = cell.PosH;
+                newPoint.PosW = cell.PosW + 2;
+            }
+            if (cell.Direction == CellDirection.Bottom)
+            {
+                newPoint.PosH = cell.PosH - 2;
+                newPoint.PosW = cell.PosW;
+            }
+            return newPoint;
+        }
     }
 
-    private List<CellPoint> FindAvailableNeighbors(CellPoint points)
+    private List<CellPoint> FindAvailableNeighbors(CellPoint points, MapType map)
     {
         var availableNeighbors = new List<CellPoint>();
 
-        if (points.PosW > 2 && _map[points.PosH, points.PosW - 2] == (int)CellType.Empty)
+        if (points.PosW > 2 && map[points.PosH, points.PosW - 2] == (int)CellType.Empty)
         {
             availableNeighbors.Add(new CellPoint() { PosH = points.PosH, PosW = points.PosW - 2 });
         }
-        if (points.PosH < _map.GetLength(0) - 2 && _map[points.PosH + 2, points.PosW] == (int)CellType.Empty)
+        if (points.PosH < map.Height - 2 && map[points.PosH + 2, points.PosW] == (int)CellType.Empty)
         {
             availableNeighbors.Add(new CellPoint() { PosH = points.PosH + 2, PosW = points.PosW });
         }
-        if (points.PosW < _map.GetLength(1) - 2 && _map[points.PosH, points.PosW + 2] == (int)CellType.Empty)
+        if (points.PosW < map.Width - 2 && map[points.PosH, points.PosW + 2] == (int)CellType.Empty)
         {
             availableNeighbors.Add(new CellPoint() { PosH = points.PosH, PosW = points.PosW + 2 });
         }
-        if (points.PosH > 2 && _map[points.PosH - 2, points.PosW] == (int)CellType.Empty)
+        if (points.PosH > 2 && map[points.PosH - 2, points.PosW] == (int)CellType.Empty)
         {
             availableNeighbors.Add(new CellPoint() { PosH = points.PosH - 2, PosW = points.PosW });
         }
@@ -229,10 +276,10 @@ public class MapController : MonoBehaviour
         }
     }
 
-    private void CreationPath(CellPoint latestNeighbor, CellPoint newNeighbor)
+    private void CreationPath(CellPoint latestNeighbor, CellPoint newNeighbor, MapType map)
     {
-        _map[(latestNeighbor.PosH + newNeighbor.PosH) / 2, (latestNeighbor.PosW + newNeighbor.PosW) / 2] = (int)CellType.Marked;
-        _map[newNeighbor.PosH, newNeighbor.PosW] = (int)CellType.Marked;
+        map[(latestNeighbor.PosH + newNeighbor.PosH) / 2, (latestNeighbor.PosW + newNeighbor.PosW) / 2] = (int)CellType.Marked;
+        map[newNeighbor.PosH, newNeighbor.PosW] = (int)CellType.Marked;
     }
 
     private void CellTypeDefinition()
@@ -240,11 +287,19 @@ public class MapController : MonoBehaviour
         int numberOfNeighbors;
         bool[] directionOfNeighbors = new bool[4]; // Left - Up - Right - Down
 
-        for (int h = 1; h <= _map.GetLength(0) - 2; h += 2)
+        for (int h = 1; h <= Map.Height - 2; h += 2)
         {
-            for (int w = 1; w <= _map.GetLength(1) - 2; w += 2)
+            for (int w = 1; w <= Map.Width - 2; w += 2)
             {
-                if (_map[h, w] == (int)CellType.Marked)
+                if (h == Map.StartPoint.PosH && w == Map.StartPoint.PosW)
+                {
+                    Map[h, w] = (int)CellType.Start * 1000 + (int)Map.StartPoint.Direction;
+                }
+                if (h == Map.EndPoint.PosH && w == Map.EndPoint.PosW)
+                {
+                    Map[h, w] = (int)CellType.End * 1000 + (int)Map.EndPoint.Direction;
+                }
+                if (Map[h, w] == (int)CellType.Marked)
                 {
                     numberOfNeighbors = 0;
                     for (int i = 0; i < directionOfNeighbors.Length; i++)
@@ -252,22 +307,22 @@ public class MapController : MonoBehaviour
                         directionOfNeighbors[i] = false;
                     }
 
-                    if (_map[h, w - 1] == (int)CellType.Marked)
+                    if (Map[h, w - 1] == (int)CellType.Marked)
                     {
                         directionOfNeighbors[0] = true;
                         numberOfNeighbors++;
                     }
-                    if (_map[h + 1, w] == (int)CellType.Marked)
+                    if (Map[h + 1, w] == (int)CellType.Marked)
                     {
                         directionOfNeighbors[1] = true;
                         numberOfNeighbors++;
                     }
-                    if (_map[h, w + 1] == (int)CellType.Marked)
+                    if (Map[h, w + 1] == (int)CellType.Marked)
                     {
                         directionOfNeighbors[2] = true;
                         numberOfNeighbors++;
                     }
-                    if (_map[h - 1, w] == (int)CellType.Marked)
+                    if (Map[h - 1, w] == (int)CellType.Marked)
                     {
                         directionOfNeighbors[3] = true;
                         numberOfNeighbors++;
@@ -275,22 +330,22 @@ public class MapController : MonoBehaviour
 
                     if (numberOfNeighbors == 1)
                     {
-                        _map[h, w] = (int)CellType.Dead * 1000;
+                        Map[h, w] = (int)CellType.Dead * 1000;
                         if (directionOfNeighbors[0])
                         {
-                            _map[h, w] += (int)CellDirection.Left;
+                            Map[h, w] += (int)CellDirection.Left;
                         }
                         if (directionOfNeighbors[1])
                         {
-                            _map[h, w] += (int)CellDirection.Top;
+                            Map[h, w] += (int)CellDirection.Top;
                         }
                         if (directionOfNeighbors[2])
                         {
-                            _map[h, w] += (int)CellDirection.Right;
+                            Map[h, w] += (int)CellDirection.Right;
                         }
                         if (directionOfNeighbors[3])
                         {
-                            _map[h, w] += (int)CellDirection.Bottom;
+                            Map[h, w] += (int)CellDirection.Bottom;
                         }
                     }
 
@@ -298,63 +353,78 @@ public class MapController : MonoBehaviour
                     {
                         if (directionOfNeighbors[0] && directionOfNeighbors[2])
                         {
-                            _map[h, w] = (int)CellType.Straight * 1000;
-                            _map[h, w] += (int)CellDirection.Left;
+                            Map[h, w] = (int)CellType.Straight * 1000;
+                            Map[h, w] += (int)CellDirection.Left;
                         }
                         if (directionOfNeighbors[1] && directionOfNeighbors[3])
                         {
-                            _map[h, w] = (int)CellType.Straight * 1000;
-                            _map[h, w] += (int)CellDirection.Top;
+                            Map[h, w] = (int)CellType.Straight * 1000;
+                            Map[h, w] += (int)CellDirection.Top;
                         }
 
                         if (directionOfNeighbors[0] && directionOfNeighbors[1])
                         {
-                            _map[h, w] = (int)CellType.Corner * 1000;
-                            _map[h, w] += (int)CellDirection.Left;
+                            Map[h, w] = (int)CellType.Corner * 1000;
+                            Map[h, w] += (int)CellDirection.Left;
                         }
                         if (directionOfNeighbors[1] && directionOfNeighbors[2])
                         {
-                            _map[h, w] = (int)CellType.Corner * 1000;
-                            _map[h, w] += (int)CellDirection.Top;
+                            Map[h, w] = (int)CellType.Corner * 1000;
+                            Map[h, w] += (int)CellDirection.Top;
                         }
                         if (directionOfNeighbors[2] && directionOfNeighbors[3])
                         {
-                            _map[h, w] = (int)CellType.Corner * 1000;
-                            _map[h, w] += (int)CellDirection.Right;
+                            Map[h, w] = (int)CellType.Corner * 1000;
+                            Map[h, w] += (int)CellDirection.Right;
                         }
                         if (directionOfNeighbors[3] && directionOfNeighbors[0])
                         {
-                            _map[h, w] = (int)CellType.Corner * 1000;
-                            _map[h, w] += (int)CellDirection.Bottom;
+                            Map[h, w] = (int)CellType.Corner * 1000;
+                            Map[h, w] += (int)CellDirection.Bottom;
                         }
                     }
 
                     if (numberOfNeighbors == 3)
                     {
-                        _map[h, w] = (int)CellType.Branch * 1000;
+                        Map[h, w] = (int)CellType.Branch * 1000;
                         if (directionOfNeighbors[0] && directionOfNeighbors[1] && directionOfNeighbors[2])
                         {
-                            _map[h, w] += (int)CellDirection.Left;
+                            Map[h, w] += (int)CellDirection.Left;
                         }
                         if (directionOfNeighbors[1] && directionOfNeighbors[2] && directionOfNeighbors[3])
                         {
-                            _map[h, w] += (int)CellDirection.Top;
+                            Map[h, w] += (int)CellDirection.Top;
                         }
                         if (directionOfNeighbors[2] && directionOfNeighbors[3] && directionOfNeighbors[0])
                         {
-                            _map[h, w] += (int)CellDirection.Right;
+                            Map[h, w] += (int)CellDirection.Right;
                         }
                         if (directionOfNeighbors[3] && directionOfNeighbors[0] && directionOfNeighbors[1])
                         {
-                            _map[h, w] += (int)CellDirection.Bottom;
+                            Map[h, w] += (int)CellDirection.Bottom;
                         }
                     }
+
                     if (numberOfNeighbors == 4)
                     {
-                        _map[h, w] = (int)CellType.Cross * 1000;
+                        Map[h, w] = (int)CellType.Cross * 1000;
                     }
                 }
             }
+        }
+    }
+
+    private void ClearEnvironments()
+    {
+        Vector3 position = Vector3.zero;
+        for (int i = _parentForEviroment.transform.childCount - 1; i >= 0; i--)
+        {
+            // fix nav mesh bake method
+            position = _parentForEviroment.transform.GetChild(i).gameObject.transform.position;
+            position.y -= 10;
+            _parentForEviroment.transform.GetChild(i).gameObject.transform.position = position;
+
+            Destroy(_parentForEviroment.transform.GetChild(i).gameObject);
         }
     }
 
@@ -363,19 +433,29 @@ public class MapController : MonoBehaviour
         float height = 0F;
         float size = _enviromentPrefabsData.CellSize / 2;
 
-        for (int h = 1; h <= _map.GetLength(0) - 2; h += 2)
+        for (int h = 1; h <= Map.Height - 2; h += 2)
         {
-            for (int w = 1; w <= _map.GetLength(1) - 2; w += 2)
+            for (int w = 1; w <= Map.Width - 2; w += 2)
             {
                 var coordinates = new Vector3(w * size, height, h * size);
-                var cellType = (CellType)(_map[h, w] / 1000);
-                var cellDirection = (DirectionForInstance)(_map[h, w] % 1000) - 90; //delete - 90 and rotate models
+                var cellType = (CellType)(Map[h, w] / 1000);
+                var cellDirection = (DirectionForInstance)(Map[h, w] % 1000) - 90; //delete - 90 and rotate models
 
                 //добавить метод который вернЄт нужный объект, будет смотреть на свободные клетки в нужном направлении
                 //тогда получитс€ метод, в который € передаю вид €чейки, направление и координаты на карте, она возвращает объект
                 //add a method that will return the desired object, will look at free cells in the desired direction
                 //someday we will get a method in which I pass the cell type, directions and coordinates on the map, it returns an object
-                var go = new GameObject();
+                GameObject go = null;
+
+                if (cellType == CellType.Start)
+                {
+                    go = _enviromentPrefabsData.StartCell;
+                }
+
+                if (cellType == CellType.End)
+                {
+                    go = _enviromentPrefabsData.EndCell;
+                }
 
                 if (cellType == CellType.Dead)
                 {
@@ -395,7 +475,7 @@ public class MapController : MonoBehaviour
                 if (cellType == CellType.Branch)
                 {
                     //until these points are deployed correctly
-                    cellDirection = (DirectionForInstance)(_map[h, w] % 1000);
+                    cellDirection = (DirectionForInstance)(Map[h, w] % 1000);
                     go = _enviromentPrefabsData.BranchCell;
                 }
 
@@ -404,8 +484,62 @@ public class MapController : MonoBehaviour
                     go = _enviromentPrefabsData.CrossCell;
                 }
 
+                if (go != null)
+                {
+                    var obj = CreateEnvironmentInstance(go, coordinates, cellDirection);
+                    //return for start and end position
+
+                    if (cellType == CellType.Start)
+                    {
+                        coordinates = obj.transform.position;
+                        coordinates += new Vector3(0F, 0.001F, 0F);
+                        var angle = new Vector3(0F, (float)cellDirection, 0F); //need change
+                        _applicationManager.GameController?.SetNewSpawnPlaceInLevel(coordinates, angle);
+                    }
+
+                    if (cellType == CellType.End)
+                    {
+                        coordinates = obj.transform.position;
+                        coordinates += new Vector3(0F, 0.001F, 0F);
+                        var angle = new Vector3(0F, (float)cellDirection, 0F); //need change
+                        _applicationManager.EnemyController?.SetPosition(coordinates, angle);
+                        _applicationManager.EnemyController?.SetTarget(_applicationManager.PlayerController.transform);
+                    }
+                }
+            }
+        }
+    }
+
+    private void DrawMapInternalRooms()
+    {
+        float height = 0F;
+        float size = _enviromentPrefabsData.CellSize / 2;
+
+        foreach (var room in Map.InternalRooms)
+        {
+            var h = room.PosH + room.SizeH / 2;
+            var w = room.PosW + room.SizeW / 2;
+
+            var coordinates = new Vector3(w * size, height, h * size);
+            var cellDirection = (DirectionForInstance)((int)room.DoorDirection) - 90;
+
+            GameObject go = null;
+            if (room.SizeH == 0 && room.SizeW == 0)
+            {
+                go = _enviromentPrefabsData.Room1x1;
+            }
+            if (room.SizeH == 2 && room.SizeW == 2)
+            {
+                go = _enviromentPrefabsData.Room2x2Left;
+            }
+            if ((room.SizeH == 4 && room.SizeW == 2) || (room.SizeH == 2 && room.SizeW == 4)) //change get room Size logic
+            {
+                go = _enviromentPrefabsData.Room3x2Center;
+            }
+
+            if (go != null)
+            {
                 CreateEnvironmentInstance(go, coordinates, cellDirection);
-                //return for start and end position
             }
         }
     }
@@ -420,17 +554,17 @@ public class MapController : MonoBehaviour
 
     public void Info()
     {
-        Debug.Log($"Map size: H {_height}, W {_width}");
-        Debug.Log($"Start point: H {_startPoint.PosH}, W {_startPoint.PosW}");
-        Debug.Log($"End point: H {_endPoint.PosH}, W {_endPoint.PosW}");
+        Debug.Log($"Map size: H {Map.Height}, W {Map.Width}");
+        Debug.Log($"Start point: H {Map.StartPoint.PosH}, W {Map.StartPoint.PosW}");
+        Debug.Log($"End point: H {Map.EndPoint.PosH}, W {Map.EndPoint.PosW}");
 
         string map = "";
-        for (int h = 0; h < _map.GetLength(0); h++)
+        for (int h = 0; h < this.Map.Height; h++)
         {
             map = "";
-            for (int w = 0; w < _map.GetLength(1); w++)
+            for (int w = 0; w < this.Map.Width; w++)
             {
-                map += _map[h, w];
+                map += this.Map[h, w];
                 map += " ";
             }
             Debug.Log(map);
