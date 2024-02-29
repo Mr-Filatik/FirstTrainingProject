@@ -61,7 +61,7 @@ namespace FirstTrainingProject
             if (_navMeshSurface == null) throw new System.Exception($"NavMeshSurface not set!");
             if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
 
-            _applicationManager.MapController = this;
+            //_applicationManager.MapController = this;
 
             _applicationManager.ApplicationGameInited += MapCreate;
             //_applicationManager.ApplicationGameEnded += MapCreate;

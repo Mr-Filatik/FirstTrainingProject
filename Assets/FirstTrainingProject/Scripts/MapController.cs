@@ -579,10 +579,10 @@ public class MapController : MonoBehaviour
     {
         if (_parentForEviroment == null) throw new System.Exception($"ParentForEnviroment not set!");
         if (_enviromentPrefabsData == null) throw new System.Exception($"EnviromentPrefabsData not set!");
-        //if (_navMeshSurface == null) throw new System.Exception($"NavMeshSurface not set!");
+        if (_navMeshSurface == null) throw new System.Exception($"NavMeshSurface not set!");
         if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
 
-        //_applicationManager.MapController = this;
+        _applicationManager.MapController = this;
 
         _applicationManager.ApplicationGameInited += CreateMap;
     }
