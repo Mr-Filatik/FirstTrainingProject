@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
+using System;
 using UnityEngine;
 
 namespace FirstTrainingProject
@@ -26,7 +24,7 @@ namespace FirstTrainingProject
 
         private void Awake()
         {
-            if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
+            if (_applicationManager == null) throw new MissingFieldException($"ApplicationManager not set!");
 
             _applicationManager.ApplicationGameStarted += GameStart;
             _applicationManager.ApplicationGameEnded += GameEnd;

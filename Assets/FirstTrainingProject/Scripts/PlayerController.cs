@@ -1,10 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Collections.LowLevel.Unsafe;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace FirstTrainingProject
 {
@@ -49,13 +44,13 @@ namespace FirstTrainingProject
         private bool _isGame = false;
 
         private bool _isRun = false;
-        private float _runAcceleration = 2F;
+        private readonly float _runAcceleration = 2F;
 
         private float _endurance = 0F;
-        private float _enduranceMin = 0F;
-        private float _enduranceMax = 1F;
-        private float _enduranceFlowRate = 0.5F;
-        private float _enduranceRecoveryRate = 0.1F;
+        private readonly float _enduranceMin = 0F;
+        private readonly float _enduranceMax = 1F;
+        private readonly float _enduranceFlowRate = 0.5F;
+        private readonly float _enduranceRecoveryRate = 0.1F;
 
         #endregion
 
@@ -73,14 +68,14 @@ namespace FirstTrainingProject
 
         private void Awake()
         {
-            if (_head == null) throw new System.Exception($"Head not set!");
-            if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
+            if (_head == null) throw new MissingFieldException($"Head not set!");
+            if (_applicationManager == null) throw new MissingFieldException($"ApplicationManager not set!");
 
             _applicationManager.PlayerController = this;
 
             _applicationManager.ApplicationGameInited += PlayerInitApplication; // m.b remove
             _applicationManager.ApplicationGamePaused += GetCurrentPosition;
-            //_applicationManager.ApplicationGameEnded += GetCurrentPosition;
+            
             _applicationManager.ApplicationGameStarted += GameStart;
             _applicationManager.ApplicationGamePaused += GamePause;
             _applicationManager.ApplicationGameContinued += GameContinue;
@@ -91,7 +86,7 @@ namespace FirstTrainingProject
         {
             _applicationManager.ApplicationGameInited -= PlayerInitApplication; // m.b remove
             _applicationManager.ApplicationGamePaused -= GetCurrentPosition;
-            //_applicationManager.ApplicationGameEnded -= GetCurrentPosition;
+            
             _applicationManager.ApplicationGameStarted -= GameStart;
             _applicationManager.ApplicationGamePaused -= GamePause;
             _applicationManager.ApplicationGameContinued -= GameContinue;

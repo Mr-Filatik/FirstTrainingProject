@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Collections.LowLevel.Unsafe;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
 
 namespace FirstTrainingProject
 {
@@ -56,8 +53,8 @@ namespace FirstTrainingProject
 
         private void Awake()
         {
-            if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
-            if (_agent == null) throw new System.Exception($"Agent not set!");
+            if (_applicationManager == null) throw new MissingFieldException($"ApplicationManager not set!");
+            if (_agent == null) throw new MissingFieldException($"Agent not set!");
 
             _applicationManager.EnemyController = this;
 
@@ -80,7 +77,7 @@ namespace FirstTrainingProject
             if (_agent.enabled)
             {
                 //!don't take every frame
-                _agent?.SetDestination(_target.position); // SetDestination in update or not
+                _agent.SetDestination(_target.position); // SetDestination in update or not
             }
         }
 

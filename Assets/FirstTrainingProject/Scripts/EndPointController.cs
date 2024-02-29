@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace FirstTrainingProject
@@ -17,6 +16,15 @@ namespace FirstTrainingProject
 
         [SerializeField]
         private bool _isWin = false;
+
+        #endregion
+
+        #region Unity Medhods
+
+        private void Awake()
+        {
+            if (_applicationManager == null) throw new MissingFieldException($"ApplicationManager not set!");
+        }
 
         #endregion
 

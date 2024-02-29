@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -55,9 +52,9 @@ namespace FirstTrainingProject
 
         private void Awake()
         {
-            if (_spawnPlaceMenu == null) throw new System.Exception($"SpawnPlaceMenu not set!");
-            if (_screen == null) throw new System.Exception($"Screen not set!");
-            if (_applicationManager == null) throw new System.Exception($"ApplicationManager not set!");
+            if (_spawnPlaceMenu == null) throw new MissingFieldException($"SpawnPlaceMenu not set!");
+            if (_screen == null) throw new MissingFieldException($"Screen not set!");
+            if (_applicationManager == null) throw new MissingFieldException($"ApplicationManager not set!");
 
             _applicationManager.GameController = this;
 
@@ -88,12 +85,9 @@ namespace FirstTrainingProject
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) && !_isPause)
             {
-                if (!_isPause)
-                {
-                    _applicationManager.ApplicationGamePause();
-                }
+                _applicationManager.ApplicationGamePause();
             }
 
             if (Input.GetKeyDown(KeyCode.Space))
@@ -107,11 +101,6 @@ namespace FirstTrainingProject
         #endregion
 
         #region Private Methods
-
-        //private void GameInit()
-        //{
-        //    _applicationManager.PlayerController.SetPosition(_spawnPositionInMenu, _spawnRotateInMenu);
-        //}
 
         private void GameStart()
         {
