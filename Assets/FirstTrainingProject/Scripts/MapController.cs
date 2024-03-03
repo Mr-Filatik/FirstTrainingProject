@@ -107,6 +107,38 @@ namespace FirstTrainingProject
             }
         }
 
+        public Vector3 GetRandomPosition(bool excludeRooms = false)
+        {
+            var hCount = Map.Height / 2;
+            var wCount = Map.Width / 2;
+            var h = UnityEngine.Random.Range(0, hCount);
+            var w = UnityEngine.Random.Range(0, wCount);
+            if (excludeRooms)
+            {
+                //bool flag = true;
+
+                //while (flag)
+                //{
+                //    flag = false;
+                //    Debug.Log($"{h} {w} - {Map.StartPoint.PosH} {Map.StartPoint.PosW}");
+                //    if (h == Map.StartPoint.PosH && w == Map.StartPoint.PosW) flag = true;
+                //    if (h == Map.EndPoint.PosH && w == Map.EndPoint.PosW) flag = true;
+                //    foreach (var room in Map.InternalRooms)
+                //    {
+                //        if (h >= room.PosH && h <= (room.PosH + room.SizeH) && w >= room.PosW && w <= (room.PosW + room.SizeW)) flag = false;
+                //    }
+                //}
+                //float size = _enviromentPrefabsData.CellSize;
+                //return new Vector3(1F + w * size, 0.001F, 1F + h * size);
+            }
+            else
+            {
+                float size = _enviromentPrefabsData.CellSize;
+                return new Vector3(1F + w * size, 0.001F, 1F + h * size);
+            }
+            return new Vector3(1F, 0.001F, 1F);
+        }
+
         public void CreateMap()
         {
             Map = new MapType(19, 27);
@@ -163,6 +195,8 @@ namespace FirstTrainingProject
             DrawMapInternalRooms();
 
             _navMeshSurface.BuildNavMesh();
+
+            //GetRandomPosition();
 
 
 

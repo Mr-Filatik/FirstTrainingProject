@@ -21,6 +21,9 @@ namespace FirstTrainingProject
         [SerializeField]
         private GameObject _gamePanel;
 
+        [SerializeField]
+        private GameObject _interactionPanel;
+
         [Header("Elements")]
 
         [SerializeField]
@@ -41,12 +44,14 @@ namespace FirstTrainingProject
         {
             if (_menuPanel == null) throw new MissingFieldException($"MenuPanel not set!");
             if (_gamePanel == null) throw new MissingFieldException($"GamePanel not set!");
+            if (_interactionPanel == null) throw new MissingFieldException($"InteractionPanel not set!");
             if (_staminaBar == null) throw new MissingFieldException($"StaminaBar not set!");
             if (_applicationManager == null) throw new MissingFieldException($"ApplicationManager not set!");
 
             _rectTransform = _staminaBar.transform as RectTransform;
             _menuPanel.SetActive(false);
             _gamePanel.SetActive(false);
+            _interactionPanel.SetActive(false);
 
             _applicationManager.ApplicationGameStarted += GameRun;
             _applicationManager.ApplicationGamePaused += GamePause;
@@ -61,6 +66,7 @@ namespace FirstTrainingProject
                 _playerController = _applicationManager.PlayerController;
             }
             _playerController.EnduranceChanged += ChangeStaminaBar;
+            _playerController.InteractionChanged += InteractionChange;
         }
 
         private void OnDestroy()
@@ -68,6 +74,7 @@ namespace FirstTrainingProject
             if (_playerController != null)
             {
                 _playerController.EnduranceChanged -= ChangeStaminaBar;
+                _playerController.InteractionChanged -= InteractionChange;
             }
             _applicationManager.ApplicationGameStarted -= GameRun;
             _applicationManager.ApplicationGamePaused -= GamePause;
@@ -100,6 +107,11 @@ namespace FirstTrainingProject
         {
             _gamePanel.SetActive(false);
             _menuPanel.SetActive(true);
+        }
+
+        private void InteractionChange(bool isInteraction)
+        {
+            _interactionPanel.SetActive(isInteraction);
         }
 
         #endregion

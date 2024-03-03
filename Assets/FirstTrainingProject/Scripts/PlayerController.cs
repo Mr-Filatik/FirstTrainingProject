@@ -31,11 +31,15 @@ namespace FirstTrainingProject
         [SerializeField]
         private GameObject _head;
 
+        [SerializeField]
+        private Camera _camera;
+
         #endregion
 
         #region Public Fields
 
         public event Action<float> EnduranceChanged;
+        public event Action<bool> InteractionChanged;
 
         #endregion
 
@@ -51,6 +55,10 @@ namespace FirstTrainingProject
         private readonly float _enduranceMax = 1F;
         private readonly float _enduranceFlowRate = 0.5F;
         private readonly float _enduranceRecoveryRate = 0.1F;
+
+        private Vector3 _startRayPosition = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+        private float _actionDistance = 1F;
+        private bool _lastInteraction = false;
 
         #endregion
 
@@ -69,13 +77,14 @@ namespace FirstTrainingProject
         private void Awake()
         {
             if (_head == null) throw new MissingFieldException($"Head not set!");
+            if (_camera == null) throw new MissingFieldException($"Camera not set!");
             if (_applicationManager == null) throw new MissingFieldException($"ApplicationManager not set!");
 
             _applicationManager.PlayerController = this;
 
             _applicationManager.ApplicationGameInited += PlayerInitApplication; // m.b remove
             _applicationManager.ApplicationGamePaused += GetCurrentPosition;
-            
+
             _applicationManager.ApplicationGameStarted += GameStart;
             _applicationManager.ApplicationGamePaused += GamePause;
             _applicationManager.ApplicationGameContinued += GameContinue;
@@ -86,7 +95,7 @@ namespace FirstTrainingProject
         {
             _applicationManager.ApplicationGameInited -= PlayerInitApplication; // m.b remove
             _applicationManager.ApplicationGamePaused -= GetCurrentPosition;
-            
+
             _applicationManager.ApplicationGameStarted -= GameStart;
             _applicationManager.ApplicationGamePaused -= GamePause;
             _applicationManager.ApplicationGameContinued -= GameContinue;
@@ -141,6 +150,32 @@ namespace FirstTrainingProject
                 currentAngles.x = _limitAngleBottom;
             }
             _head.transform.localEulerAngles = currentAngles;
+
+            
+            bool interaction = false;
+            Ray ray = _camera.ScreenPointToRay(_startRayPosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                var obj = hit.transform.gameObject.GetComponent<KnobController>();
+                if (obj != null && hit.distance < _actionDistance)
+                {
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        obj.KnobTrigger();
+                    }
+                    else
+                    {
+                        interaction = true;
+                        InteractionChanged?.Invoke(true);
+                    }
+                }
+            }
+            if (_lastInteraction != interaction)
+            {
+                InteractionChanged?.Invoke(interaction);
+                _lastInteraction = interaction;
+            }
         }
 
         #endregion
